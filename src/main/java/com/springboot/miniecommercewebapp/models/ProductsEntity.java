@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tblproducts", schema = "miniecommerce", catalog = "")
-public class TblproductsEntity {
+@Table(name = "tblProducts", schema = "dbo", catalog = "MiniEcommerce")
+public class ProductsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "productID", nullable = false)
@@ -29,13 +29,16 @@ public class TblproductsEntity {
     @Basic
     @Column(name = "status", nullable = false)
     private boolean status;
-    @OneToMany(mappedBy = "tblproductsByProductId")
-    private Collection<TblcartsEntity> tblcartsByProductId;
+    @OneToMany(mappedBy = "tblProductsByProductId")
+    private Collection<CartsEntity> tblCartsByProductId;
+    @OneToMany(mappedBy = "tblProductsByProductId")
+    private Collection<OrderDetailsEntity> tblOrderDetailsByProductId;
     @ManyToOne
-    @JoinColumn(name = "catagoryID", referencedColumnName = "catagoryID", nullable = false)
-    private TblcategoriesEntity tblcategoriesByCatagoryId;
-    @OneToMany(mappedBy = "tblproductsByProductId")
-    private Collection<TblratingsEntity> tblratingsByProductId;
+    @JoinColumn(name = "catagoryID", referencedColumnName = "catagoryID", nullable = false,
+            insertable = false, updatable=false)
+    private CategoriesEntity tblCategoriesByCatagoryId;
+    @OneToMany(mappedBy = "tblProductsByProductId")
+    private Collection<RatingsEntity> tblRatingsByProductId;
 
     public int getProductId() {
         return productId;
@@ -97,7 +100,7 @@ public class TblproductsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TblproductsEntity that = (TblproductsEntity) o;
+        ProductsEntity that = (ProductsEntity) o;
         return productId == that.productId && Double.compare(that.price, price) == 0 && quantity == that.quantity && catagoryId == that.catagoryId && status == that.status && Objects.equals(productName, that.productName) && Objects.equals(image, that.image);
     }
 
@@ -106,27 +109,35 @@ public class TblproductsEntity {
         return Objects.hash(productId, productName, image, price, quantity, catagoryId, status);
     }
 
-    public Collection<TblcartsEntity> getTblcartsByProductId() {
-        return tblcartsByProductId;
+    public Collection<CartsEntity> getTblCartsByProductId() {
+        return tblCartsByProductId;
     }
 
-    public void setTblcartsByProductId(Collection<TblcartsEntity> tblcartsByProductId) {
-        this.tblcartsByProductId = tblcartsByProductId;
+    public void setTblCartsByProductId(Collection<CartsEntity> tblCartsByProductId) {
+        this.tblCartsByProductId = tblCartsByProductId;
     }
 
-    public TblcategoriesEntity getTblcategoriesByCatagoryId() {
-        return tblcategoriesByCatagoryId;
+    public Collection<OrderDetailsEntity> getTblOrderDetailsByProductId() {
+        return tblOrderDetailsByProductId;
     }
 
-    public void setTblcategoriesByCatagoryId(TblcategoriesEntity tblcategoriesByCatagoryId) {
-        this.tblcategoriesByCatagoryId = tblcategoriesByCatagoryId;
+    public void setTblOrderDetailsByProductId(Collection<OrderDetailsEntity> tblOrderDetailsByProductId) {
+        this.tblOrderDetailsByProductId = tblOrderDetailsByProductId;
     }
 
-    public Collection<TblratingsEntity> getTblratingsByProductId() {
-        return tblratingsByProductId;
+    public CategoriesEntity getTblCategoriesByCatagoryId() {
+        return tblCategoriesByCatagoryId;
     }
 
-    public void setTblratingsByProductId(Collection<TblratingsEntity> tblratingsByProductId) {
-        this.tblratingsByProductId = tblratingsByProductId;
+    public void setTblCategoriesByCatagoryId(CategoriesEntity tblCategoriesByCatagoryId) {
+        this.tblCategoriesByCatagoryId = tblCategoriesByCatagoryId;
+    }
+
+    public Collection<RatingsEntity> getTblRatingsByProductId() {
+        return tblRatingsByProductId;
+    }
+
+    public void setTblRatingsByProductId(Collection<RatingsEntity> tblRatingsByProductId) {
+        this.tblRatingsByProductId = tblRatingsByProductId;
     }
 }

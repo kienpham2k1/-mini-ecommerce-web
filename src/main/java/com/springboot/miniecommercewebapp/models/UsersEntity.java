@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tblusers", schema = "miniecommerce", catalog = "")
-public class TblusersEntity {
+@Table(name = "tblUsers", schema = "dbo", catalog = "MiniEcommerce")
+public class UsersEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "userID", nullable = false)
@@ -36,15 +36,16 @@ public class TblusersEntity {
     @Basic
     @Column(name = "status", nullable = false)
     private boolean status;
-    @OneToMany(mappedBy = "tblusersByUserId")
-    private Collection<TblcartsEntity> tblcartsByUserId;
-    @OneToMany(mappedBy = "tblusersByUserId")
-    private Collection<TblordersEntity> tblordersByUserId;
-    @OneToMany(mappedBy = "tblusersByUserId")
-    private Collection<TblratingsEntity> tblratingsByUserId;
+    @OneToMany(mappedBy = "tblUsersByUserId")
+    private Collection<CartsEntity> tblCartsByUserId;
+    @OneToMany(mappedBy = "tblUsersByUserId")
+    private Collection<OrdersEntity> tblOrdersByUserId;
+    @OneToMany(mappedBy = "tblUsersByUserId")
+    private Collection<RatingsEntity> tblRatingsByUserId;
     @ManyToOne
-    @JoinColumn(name = "roleID", referencedColumnName = "roleID", nullable = false)
-    private TblrolesEntity tblrolesByRoleId;
+    @JoinColumn(name = "roleID", referencedColumnName = "roleID", nullable = false,
+            insertable = false, updatable=false)
+    private RolesEntity tblRolesByRoleId;
 
     public int getUserId() {
         return userId;
@@ -122,7 +123,7 @@ public class TblusersEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TblusersEntity that = (TblusersEntity) o;
+        UsersEntity that = (UsersEntity) o;
         return userId == that.userId && roleId == that.roleId && phone == that.phone && status == that.status && Objects.equals(fullName, that.fullName) && Objects.equals(password, that.password) && Objects.equals(address, that.address) && Objects.equals(birthday, that.birthday) && Objects.equals(email, that.email);
     }
 
@@ -131,35 +132,35 @@ public class TblusersEntity {
         return Objects.hash(userId, fullName, password, roleId, address, birthday, phone, email, status);
     }
 
-    public Collection<TblcartsEntity> getTblcartsByUserId() {
-        return tblcartsByUserId;
+    public Collection<CartsEntity> getTblCartsByUserId() {
+        return tblCartsByUserId;
     }
 
-    public void setTblcartsByUserId(Collection<TblcartsEntity> tblcartsByUserId) {
-        this.tblcartsByUserId = tblcartsByUserId;
+    public void setTblCartsByUserId(Collection<CartsEntity> tblCartsByUserId) {
+        this.tblCartsByUserId = tblCartsByUserId;
     }
 
-    public Collection<TblordersEntity> getTblordersByUserId() {
-        return tblordersByUserId;
+    public Collection<OrdersEntity> getTblOrdersByUserId() {
+        return tblOrdersByUserId;
     }
 
-    public void setTblordersByUserId(Collection<TblordersEntity> tblordersByUserId) {
-        this.tblordersByUserId = tblordersByUserId;
+    public void setTblOrdersByUserId(Collection<OrdersEntity> tblOrdersByUserId) {
+        this.tblOrdersByUserId = tblOrdersByUserId;
     }
 
-    public Collection<TblratingsEntity> getTblratingsByUserId() {
-        return tblratingsByUserId;
+    public Collection<RatingsEntity> getTblRatingsByUserId() {
+        return tblRatingsByUserId;
     }
 
-    public void setTblratingsByUserId(Collection<TblratingsEntity> tblratingsByUserId) {
-        this.tblratingsByUserId = tblratingsByUserId;
+    public void setTblRatingsByUserId(Collection<RatingsEntity> tblRatingsByUserId) {
+        this.tblRatingsByUserId = tblRatingsByUserId;
     }
 
-    public TblrolesEntity getTblrolesByRoleId() {
-        return tblrolesByRoleId;
+    public RolesEntity getTblRolesByRoleId() {
+        return tblRolesByRoleId;
     }
 
-    public void setTblrolesByRoleId(TblrolesEntity tblrolesByRoleId) {
-        this.tblrolesByRoleId = tblrolesByRoleId;
+    public void setTblRolesByRoleId(RolesEntity tblRolesByRoleId) {
+        this.tblRolesByRoleId = tblRolesByRoleId;
     }
 }

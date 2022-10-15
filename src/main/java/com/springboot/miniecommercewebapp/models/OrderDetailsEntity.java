@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tblorderdetails", schema = "miniecommerce", catalog = "")
-public class TblorderdetailsEntity {
+@Table(name = "tblOrderDetails", schema = "dbo", catalog = "MiniEcommerce")
+public class OrderDetailsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "detailID", nullable = false)
@@ -23,8 +23,13 @@ public class TblorderdetailsEntity {
     @Column(name = "productID", nullable = false)
     private int productId;
     @ManyToOne
-    @JoinColumn(name = "orderID", referencedColumnName = "orderID")
-    private TblordersEntity tblordersByOrderId;
+    @JoinColumn(name = "orderID", referencedColumnName = "orderID",
+            insertable = false, updatable=false)
+    private OrdersEntity tblOrdersByOrderId;
+    @ManyToOne
+    @JoinColumn(name = "productID", referencedColumnName = "productID", nullable = false,
+            insertable = false, updatable=false)
+    private ProductsEntity tblProductsByProductId;
 
     public int getDetailId() {
         return detailId;
@@ -70,7 +75,7 @@ public class TblorderdetailsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TblorderdetailsEntity that = (TblorderdetailsEntity) o;
+        OrderDetailsEntity that = (OrderDetailsEntity) o;
         return detailId == that.detailId && quantity == that.quantity && Double.compare(that.price, price) == 0 && productId == that.productId && Objects.equals(orderId, that.orderId);
     }
 
@@ -79,11 +84,19 @@ public class TblorderdetailsEntity {
         return Objects.hash(detailId, quantity, price, orderId, productId);
     }
 
-    public TblordersEntity getTblordersByOrderId() {
-        return tblordersByOrderId;
+    public OrdersEntity getTblOrdersByOrderId() {
+        return tblOrdersByOrderId;
     }
 
-    public void setTblordersByOrderId(TblordersEntity tblordersByOrderId) {
-        this.tblordersByOrderId = tblordersByOrderId;
+    public void setTblOrdersByOrderId(OrdersEntity tblOrdersByOrderId) {
+        this.tblOrdersByOrderId = tblOrdersByOrderId;
+    }
+
+    public ProductsEntity getTblProductsByProductId() {
+        return tblProductsByProductId;
+    }
+
+    public void setTblProductsByProductId(ProductsEntity tblProductsByProductId) {
+        this.tblProductsByProductId = tblProductsByProductId;
     }
 }

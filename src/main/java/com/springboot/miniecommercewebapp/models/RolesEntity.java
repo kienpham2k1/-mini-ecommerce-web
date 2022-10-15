@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tblroles", schema = "miniecommerce", catalog = "")
-public class TblrolesEntity {
+@Table(name = "tblRoles", schema = "dbo", catalog = "MiniEcommerce")
+public class RolesEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "roleID", nullable = false)
@@ -14,10 +14,10 @@ public class TblrolesEntity {
     @Basic
     @Column(name = "roleName", nullable = false, length = 20)
     private String roleName;
-    @OneToMany(mappedBy = "tblrolesByRoleId")
-    private Collection<TbladminsEntity> tbladminsByRoleId;
-    @OneToMany(mappedBy = "tblrolesByRoleId")
-    private Collection<TblusersEntity> tblusersByRoleId;
+    @OneToMany(mappedBy = "tblRolesByRoleId")
+    private Collection<AdminsEntity> tblAdminsByRoleId;
+    @OneToMany(mappedBy = "tblRolesByRoleId")
+    private Collection<UsersEntity> tblUsersByRoleId;
 
     public int getRoleId() {
         return roleId;
@@ -39,7 +39,7 @@ public class TblrolesEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TblrolesEntity that = (TblrolesEntity) o;
+        RolesEntity that = (RolesEntity) o;
         return roleId == that.roleId && Objects.equals(roleName, that.roleName);
     }
 
@@ -48,19 +48,19 @@ public class TblrolesEntity {
         return Objects.hash(roleId, roleName);
     }
 
-    public Collection<TbladminsEntity> getTbladminsByRoleId() {
-        return tbladminsByRoleId;
+    public Collection<AdminsEntity> getTblAdminsByRoleId() {
+        return tblAdminsByRoleId;
     }
 
-    public void setTbladminsByRoleId(Collection<TbladminsEntity> tbladminsByRoleId) {
-        this.tbladminsByRoleId = tbladminsByRoleId;
+    public void setTblAdminsByRoleId(Collection<AdminsEntity> tblAdminsByRoleId) {
+        this.tblAdminsByRoleId = tblAdminsByRoleId;
     }
 
-    public Collection<TblusersEntity> getTblusersByRoleId() {
-        return tblusersByRoleId;
+    public Collection<UsersEntity> getTblUsersByRoleId() {
+        return tblUsersByRoleId;
     }
 
-    public void setTblusersByRoleId(Collection<TblusersEntity> tblusersByRoleId) {
-        this.tblusersByRoleId = tblusersByRoleId;
+    public void setTblUsersByRoleId(Collection<UsersEntity> tblUsersByRoleId) {
+        this.tblUsersByRoleId = tblUsersByRoleId;
     }
 }

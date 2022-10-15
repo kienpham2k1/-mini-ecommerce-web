@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tblratings", schema = "miniecommerce", catalog = "")
-public class TblratingsEntity {
+@Table(name = "tblRatings", schema = "dbo", catalog = "MiniEcommerce")
+public class RatingsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ratingID", nullable = false)
@@ -20,11 +20,13 @@ public class TblratingsEntity {
     @Column(name = "score", nullable = false)
     private int score;
     @ManyToOne
-    @JoinColumn(name = "productID", referencedColumnName = "productID", nullable = false)
-    private TblproductsEntity tblproductsByProductId;
+    @JoinColumn(name = "productID", referencedColumnName = "productID", nullable = false,
+            insertable = false, updatable=false)
+    private ProductsEntity tblProductsByProductId;
     @ManyToOne
-    @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false)
-    private TblusersEntity tblusersByUserId;
+    @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false,
+            insertable = false, updatable=false)
+    private UsersEntity tblUsersByUserId;
 
     public int getRatingId() {
         return ratingId;
@@ -62,7 +64,7 @@ public class TblratingsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TblratingsEntity that = (TblratingsEntity) o;
+        RatingsEntity that = (RatingsEntity) o;
         return ratingId == that.ratingId && productId == that.productId && userId == that.userId && score == that.score;
     }
 
@@ -71,19 +73,19 @@ public class TblratingsEntity {
         return Objects.hash(ratingId, productId, userId, score);
     }
 
-    public TblproductsEntity getTblproductsByProductId() {
-        return tblproductsByProductId;
+    public ProductsEntity getTblProductsByProductId() {
+        return tblProductsByProductId;
     }
 
-    public void setTblproductsByProductId(TblproductsEntity tblproductsByProductId) {
-        this.tblproductsByProductId = tblproductsByProductId;
+    public void setTblProductsByProductId(ProductsEntity tblProductsByProductId) {
+        this.tblProductsByProductId = tblProductsByProductId;
     }
 
-    public TblusersEntity getTblusersByUserId() {
-        return tblusersByUserId;
+    public UsersEntity getTblUsersByUserId() {
+        return tblUsersByUserId;
     }
 
-    public void setTblusersByUserId(TblusersEntity tblusersByUserId) {
-        this.tblusersByUserId = tblusersByUserId;
+    public void setTblUsersByUserId(UsersEntity tblUsersByUserId) {
+        this.tblUsersByUserId = tblUsersByUserId;
     }
 }

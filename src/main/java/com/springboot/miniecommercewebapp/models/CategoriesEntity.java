@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tblcategories", schema = "miniecommerce", catalog = "")
-public class TblcategoriesEntity {
+@Table(name = "tblCategories", schema = "dbo", catalog = "MiniEcommerce")
+public class CategoriesEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "catagoryID", nullable = false)
@@ -14,8 +14,8 @@ public class TblcategoriesEntity {
     @Basic
     @Column(name = "catagoryName", nullable = false, length = 100)
     private String catagoryName;
-    @OneToMany(mappedBy = "tblcategoriesByCatagoryId")
-    private Collection<TblproductsEntity> tblproductsByCatagoryId;
+    @OneToMany(mappedBy = "tblCategoriesByCatagoryId")
+    private Collection<ProductsEntity> tblProductsByCatagoryId;
 
     public int getCatagoryId() {
         return catagoryId;
@@ -37,7 +37,7 @@ public class TblcategoriesEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TblcategoriesEntity that = (TblcategoriesEntity) o;
+        CategoriesEntity that = (CategoriesEntity) o;
         return catagoryId == that.catagoryId && Objects.equals(catagoryName, that.catagoryName);
     }
 
@@ -46,11 +46,11 @@ public class TblcategoriesEntity {
         return Objects.hash(catagoryId, catagoryName);
     }
 
-    public Collection<TblproductsEntity> getTblproductsByCatagoryId() {
-        return tblproductsByCatagoryId;
+    public Collection<ProductsEntity> getTblProductsByCatagoryId() {
+        return tblProductsByCatagoryId;
     }
 
-    public void setTblproductsByCatagoryId(Collection<TblproductsEntity> tblproductsByCatagoryId) {
-        this.tblproductsByCatagoryId = tblproductsByCatagoryId;
+    public void setTblProductsByCatagoryId(Collection<ProductsEntity> tblProductsByCatagoryId) {
+        this.tblProductsByCatagoryId = tblProductsByCatagoryId;
     }
 }

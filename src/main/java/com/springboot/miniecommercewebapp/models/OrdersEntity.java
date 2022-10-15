@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tblorders", schema = "miniecommerce", catalog = "")
-public class TblordersEntity {
+@Table(name = "tblOrders", schema = "dbo", catalog = "MiniEcommerce")
+public class OrdersEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "orderID", nullable = false)
@@ -24,11 +24,12 @@ public class TblordersEntity {
     @Basic
     @Column(name = "status", nullable = false)
     private boolean status;
-    @OneToMany(mappedBy = "tblordersByOrderId")
-    private Collection<TblorderdetailsEntity> tblorderdetailsByOrderId;
+    @OneToMany(mappedBy = "tblOrdersByOrderId")
+    private Collection<OrderDetailsEntity> tblOrderDetailsByOrderId;
     @ManyToOne
-    @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false)
-    private TblusersEntity tblusersByUserId;
+    @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false,
+            insertable = false, updatable=false)
+    private UsersEntity tblUsersByUserId;
 
     public int getOrderId() {
         return orderId;
@@ -74,7 +75,7 @@ public class TblordersEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TblordersEntity that = (TblordersEntity) o;
+        OrdersEntity that = (OrdersEntity) o;
         return orderId == that.orderId && Double.compare(that.total, total) == 0 && userId == that.userId && status == that.status && Objects.equals(orderDate, that.orderDate);
     }
 
@@ -83,19 +84,19 @@ public class TblordersEntity {
         return Objects.hash(orderId, orderDate, total, userId, status);
     }
 
-    public Collection<TblorderdetailsEntity> getTblorderdetailsByOrderId() {
-        return tblorderdetailsByOrderId;
+    public Collection<OrderDetailsEntity> getTblOrderDetailsByOrderId() {
+        return tblOrderDetailsByOrderId;
     }
 
-    public void setTblorderdetailsByOrderId(Collection<TblorderdetailsEntity> tblorderdetailsByOrderId) {
-        this.tblorderdetailsByOrderId = tblorderdetailsByOrderId;
+    public void setTblOrderDetailsByOrderId(Collection<OrderDetailsEntity> tblOrderDetailsByOrderId) {
+        this.tblOrderDetailsByOrderId = tblOrderDetailsByOrderId;
     }
 
-    public TblusersEntity getTblusersByUserId() {
-        return tblusersByUserId;
+    public UsersEntity getTblUsersByUserId() {
+        return tblUsersByUserId;
     }
 
-    public void setTblusersByUserId(TblusersEntity tblusersByUserId) {
-        this.tblusersByUserId = tblusersByUserId;
+    public void setTblUsersByUserId(UsersEntity tblUsersByUserId) {
+        this.tblUsersByUserId = tblUsersByUserId;
     }
 }

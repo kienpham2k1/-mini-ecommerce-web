@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tbladmins", schema = "miniecommerce", catalog = "")
-public class TbladminsEntity {
+@Table(name = "tblAdmins", schema = "dbo", catalog = "MiniEcommerce")
+public class AdminsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "userID", nullable = false)
@@ -17,8 +17,9 @@ public class TbladminsEntity {
     @Column(name = "roleID", nullable = false)
     private int roleId;
     @ManyToOne
-    @JoinColumn(name = "roleID", referencedColumnName = "roleID", nullable = false)
-    private TblrolesEntity tblrolesByRoleId;
+    @JoinColumn(name = "roleID", referencedColumnName = "roleID", nullable = false,
+            insertable = false, updatable=false)
+    private RolesEntity tblRolesByRoleId;
 
     public int getUserId() {
         return userId;
@@ -48,7 +49,7 @@ public class TbladminsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TbladminsEntity that = (TbladminsEntity) o;
+        AdminsEntity that = (AdminsEntity) o;
         return userId == that.userId && roleId == that.roleId && Objects.equals(password, that.password);
     }
 
@@ -57,11 +58,11 @@ public class TbladminsEntity {
         return Objects.hash(userId, password, roleId);
     }
 
-    public TblrolesEntity getTblrolesByRoleId() {
-        return tblrolesByRoleId;
+    public RolesEntity getTblRolesByRoleId() {
+        return tblRolesByRoleId;
     }
 
-    public void setTblrolesByRoleId(TblrolesEntity tblrolesByRoleId) {
-        this.tblrolesByRoleId = tblrolesByRoleId;
+    public void setTblRolesByRoleId(RolesEntity tblRolesByRoleId) {
+        this.tblRolesByRoleId = tblRolesByRoleId;
     }
 }
