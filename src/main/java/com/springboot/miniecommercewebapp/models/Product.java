@@ -13,7 +13,7 @@ import java.util.Collection;
 @Entity
 @Data
 @Table(name = "tblProducts", schema = "dbo", catalog = "MiniEcommerce")
-public class Products {
+public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "productID", nullable = false)
@@ -38,10 +38,10 @@ public class Products {
     private boolean status;
     @OneToMany(mappedBy = "tblProductsByProductId")
     @JsonIgnore
-    private Collection<Carts> tblCartsByProductId;
+    private Collection<Cart> tblCartsByProductId;
     @OneToMany(mappedBy = "tblProductsByProductId")
     @JsonIgnore
-    private Collection<OrderDetails> tblOrderDetailsByProductId;
+    private Collection<OrderDetail> tblOrderDetailsByProductId;
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "catagoryID", referencedColumnName = "catagoryID", nullable = false,
@@ -49,5 +49,5 @@ public class Products {
     private Categories tblCategoriesByCatagoryId;
     @OneToMany(mappedBy = "tblProductsByProductId")
     @JsonIgnore
-    private Collection<Ratings> tblRatingsByProductId;
+    private Collection<Rating> tblRatingsByProductId;
 }

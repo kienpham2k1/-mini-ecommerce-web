@@ -14,7 +14,7 @@ import java.util.Collection;
 @Entity
 @Data
 @Table(name = "tblOrders", schema = "dbo", catalog = "MiniEcommerce")
-public class Orders {
+public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "orderID", nullable = false)
@@ -33,10 +33,10 @@ public class Orders {
     private boolean status;
     @OneToMany(mappedBy = "tblOrdersByOrderId")
     @JsonIgnore
-    private Collection<OrderDetails> tblOrderDetailsByOrderId;
+    private Collection<OrderDetail> tblOrderDetailsByOrderId;
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false,
             insertable = false, updatable=false)
-    private Users tblUsersByUserId;
+    private User tblUsersByUserId;
 }

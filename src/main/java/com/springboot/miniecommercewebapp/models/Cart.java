@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @Table(name = "tblCarts", schema = "dbo", catalog = "MiniEcommerce")
-public class Carts {
+public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "cartID", nullable = false)
@@ -30,10 +30,10 @@ public class Carts {
     @JsonIgnore
     @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false,
             insertable = false, updatable=false)
-    private Users tblUsersByUserId;
+    private User tblUsersByUserId;
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "productID", referencedColumnName = "productID", nullable = false,
             insertable = false, updatable=false)
-    private Products tblProductsByProductId;
+    private Product tblProductsByProductId;
 }

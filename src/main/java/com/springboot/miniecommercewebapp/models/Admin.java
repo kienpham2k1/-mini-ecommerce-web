@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @Table(name = "tblAdmins", schema = "dbo", catalog = "MiniEcommerce")
-public class Admins {
+public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "userID", nullable = false, length = 20)
@@ -27,5 +27,5 @@ public class Admins {
     @JsonIgnore
     @JoinColumn(name = "roleID", referencedColumnName = "roleID", nullable = false,
             insertable = false, updatable=false)
-    private Roles tblRolesByRoleId;
+    private Role tblRolesByRoleId;
 }

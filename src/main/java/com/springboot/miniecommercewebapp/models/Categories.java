@@ -23,5 +23,5 @@ public class Categories {
     private String catagoryName;
     @OneToMany(mappedBy = "tblCategoriesByCatagoryId")
     @JsonIgnore
-    private Collection<Products> tblProductsByCatagoryId;
+    private Collection<Product> tblProductsByCatagoryId;
 }

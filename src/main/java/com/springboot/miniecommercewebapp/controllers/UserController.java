@@ -1,21 +1,37 @@
 package com.springboot.miniecommercewebapp.controllers;
 
-import com.springboot.miniecommercewebapp.models.Users;
-import com.springboot.miniecommercewebapp.repositories.UserRepository;
+import com.springboot.miniecommercewebapp.models.ResponseObject;
+import com.springboot.miniecommercewebapp.models.User;
+import com.springboot.miniecommercewebapp.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
     @Autowired
-    UserRepository userRepository;
-    @GetMapping("")
-    List<Users> getAllUsers(){
-        return  userRepository.findAll();
+    IUserService iUserService;
+
+    @GetMapping("/login")
+    ResponseEntity<ResponseObject> login(@RequestParam(value = "userId", required = true) String userId,
+                                         @RequestParam(value = "password", required = true) String password) {
+        return iUserService.login(userId, password);
     }
+
+    @PostMapping("/register")
+    ResponseEntity<ResponseObject> register(@RequestBody User newUser) {
+        return iUserService.register(newUser);
+    }
+
+    @PutMapping("/update/{id}")
+    ResponseEntity<ResponseObject> updateUser(@RequestBody User newUser, @PathVariable String id) {
+        return iUserService.updateUser(newUser, id);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    ResponseEntity<ResponseObject> deleteUser(@PathVariable String id){
+        return iUserService.deleteUser(id);
+    }
+
 }
