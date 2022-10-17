@@ -23,7 +23,7 @@ public class Product {
     @Column(name = "productName", nullable = false, length = 100)
     private String productName;
     @Basic
-    @Column(name = "description", nullable = false, length = 1000)
+    @Column(name = "description", nullable = true, length = 1000)
     private String description;
     @Basic
     @Column(name = "createdDate", nullable = true)
@@ -42,6 +42,7 @@ public class Product {
     private int catagoryId;
     @Basic
     @Column(name = "status", nullable = false)
+    //enum?
     private boolean status;
     @OneToMany(mappedBy = "tblProductsByProductId")
     @JsonIgnore
