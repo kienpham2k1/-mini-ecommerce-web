@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(path = "/products")
 public class ProductController {
@@ -17,8 +15,16 @@ public class ProductController {
 
     // Get all products
     @GetMapping("")
-    List<Product> getAllProducts() {
+    ResponseEntity<ResponseObject> getAllProducts() {
         return iProductService.getAllProducts();
+    }
+
+    @GetMapping("/pagination")
+    ResponseEntity<ResponseObject> getAllProducts(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
+                                                  @RequestParam(name = "size", required = false, defaultValue = "2") Integer size,
+                                                  @RequestParam(name = "sortTable", required = false, defaultValue = "productID") String sortTable,
+                                                  @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+        return iProductService.getProductsWithPage(page, size, sortTable, sort);
     }
 
     // Get products by category id
@@ -39,16 +45,16 @@ public class ProductController {
     ResponseEntity<ResponseObject> addNewProduct(@RequestBody Product newProduct) {
         return iProductService.addNewProduct(newProduct);
     }
+
     // Update Product
     @PutMapping("updateProduct/{productId}")
-    ResponseEntity<ResponseObject> updateProduct(@RequestBody Product newProduct, @PathVariable int productId)
-    {
+    ResponseEntity<ResponseObject> updateProduct(@RequestBody Product newProduct, @PathVariable int productId) {
         return iProductService.updateProduct(newProduct, productId);
     }
+
     // Delete product by id
     @DeleteMapping("/deleteProduct/{productId}")
-    ResponseEntity<ResponseObject> deleteProduct(@PathVariable int productId)
-    {
+    ResponseEntity<ResponseObject> deleteProduct(@PathVariable int productId) {
         return iProductService.deleteProduct(productId);
     }
 

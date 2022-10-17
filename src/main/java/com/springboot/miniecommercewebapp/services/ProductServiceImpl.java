@@ -4,6 +4,10 @@ import com.springboot.miniecommercewebapp.models.Product;
 import com.springboot.miniecommercewebapp.models.ResponseObject;
 import com.springboot.miniecommercewebapp.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,8 +21,37 @@ public class ProductServiceImpl implements IProductService {
     private ProductRepository productRepository;
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public ResponseEntity<ResponseObject> getAllProducts() {
+        List<Product> listProducts = productRepository.findAll();
+        if (!listProducts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Product found", listProducts)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", "Product not found", null)
+            );
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> getProductsWithPage(int page, int size, String sortable, String sort) {
+        Pageable pageable = null;
+        if (sort.equals("ASC")) {
+            pageable = PageRequest.of(page, size, Sort.by(sortable.trim()).ascending());
+        } else if (sort.equals("DESC")) {
+            pageable = PageRequest.of(page, size, Sort.by(sortable.trim()).ascending());
+        }
+        Page<Product> pg = productRepository.findProducts(pageable);
+        if (!pg.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Product found", pg)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", "Product not found", null)
+            );
+        }
     }
 
     @Override
