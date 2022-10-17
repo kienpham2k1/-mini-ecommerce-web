@@ -21,6 +21,9 @@ public class Categories {
     @Basic
     @Column(name = "catagoryName", nullable = false, length = 100)
     private String catagoryName;
+    @Basic
+    @Column(name = "description", nullable = true, length = 1000)
+    private String description;
     @OneToMany(mappedBy = "tblCategoriesByCatagoryId")
     @JsonIgnore
     private Collection<Product> tblProductsByCatagoryId;

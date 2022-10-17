@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.Collection;
 
 @Getter
@@ -21,6 +22,12 @@ public class Product {
     @Basic
     @Column(name = "productName", nullable = false, length = 100)
     private String productName;
+    @Basic
+    @Column(name = "description", nullable = false, length = 1000)
+    private String description;
+    @Basic
+    @Column(name = "createdDate", nullable = true)
+    private Date createdDate;
     @Basic
     @Column(name = "image", nullable = false, length = -1)
     private String image;
