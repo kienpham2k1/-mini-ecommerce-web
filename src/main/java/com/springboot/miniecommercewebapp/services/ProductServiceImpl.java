@@ -97,22 +97,22 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> updateProduct(Product newProduct, int id) {
-        Optional<Product> updateProduct = productRepository.findById(id)
+    public ResponseEntity<ResponseObject> updateProduct(Product updateProduct, int id) {
+        Optional<Product> foundProduct = productRepository.findById(id)
                 .map(product -> {
-                    product.setProductName(newProduct.getProductName());
-                    product.setImage(newProduct.getImage());
-                    product.setPrice(newProduct.getPrice());
-                    product.setQuantity(newProduct.getQuantity());
-                    product.setCatagoryId(newProduct.getCatagoryId());
-                    product.setStatus(newProduct.isStatus());
-                    product.setDescription(newProduct.getDescription());
+                    product.setProductName(updateProduct.getProductName());
+                    product.setImage(updateProduct.getImage());
+                    product.setPrice(updateProduct.getPrice());
+                    product.setQuantity(updateProduct.getQuantity());
+                    product.setCatagoryId(updateProduct.getCatagoryId());
+                    product.setStatus(updateProduct.isStatus());
+                    product.setDescription(updateProduct.getDescription());
                     product.setCreatedDate(Date.valueOf(java.time.LocalDate.now()));
                     return productRepository.save(product);
                 });
-        if (updateProduct.isEmpty()) {
+        if (foundProduct.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Product not found!", updateProduct)
+                    new ResponseObject("failed", "Product not found!", "")
             );
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(
