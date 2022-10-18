@@ -54,7 +54,7 @@ public class Product {
     @JsonIgnore
     @JoinColumn(name = "catagoryID", referencedColumnName = "catagoryID", nullable = false,
             insertable = false, updatable=false)
-    private Categories tblCategoriesByCatagoryId;
+    private Category tblCategoriesByCatagoryId;
     @OneToMany(mappedBy = "tblProductsByProductId")
     @JsonIgnore
     private Collection<Rating> tblRatingsByProductId;
