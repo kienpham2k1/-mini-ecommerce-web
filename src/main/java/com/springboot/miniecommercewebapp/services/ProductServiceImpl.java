@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +43,7 @@ public class ProductServiceImpl implements IProductService {
         } else if (sort.equals("DESC")) {
             pageable = PageRequest.of(page, size, Sort.by(sortable.trim()).ascending());
         }
-        Page<Product> pg = productRepository.findProducts(pageable);
+        Page<Product> pg = productRepository.findAll(pageable);
         if (!pg.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Product found", pg)
@@ -105,6 +106,8 @@ public class ProductServiceImpl implements IProductService {
                     product.setQuantity(newProduct.getQuantity());
                     product.setCatagoryId(newProduct.getCatagoryId());
                     product.setStatus(newProduct.isStatus());
+                    product.setDescription(newProduct.getDescription());
+                    product.setCreatedDate(Date.valueOf(java.time.LocalDate.now()));
                     return productRepository.save(product);
                 });
         if (updateProduct.isEmpty()) {
@@ -123,9 +126,9 @@ public class ProductServiceImpl implements IProductService {
         Optional<Product> deleteProduct = productRepository.findById(id)
                 .map(product -> {
                     product.setStatus(false);
-                    return productRepository.save(product);
+                    return  product;
                 });
-        if (!deleteProduct.isEmpty()) {
+        if (deleteProduct.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Delete successfully!", "")
             );

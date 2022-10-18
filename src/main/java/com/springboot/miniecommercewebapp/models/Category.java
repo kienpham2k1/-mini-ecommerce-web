@@ -13,7 +13,7 @@ import java.util.Collection;
 @Entity
 @Data
 @Table(name = "tblCategories", schema = "dbo", catalog = "MiniEcommerce")
-public class Categories {
+public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "catagoryID", nullable = false)
