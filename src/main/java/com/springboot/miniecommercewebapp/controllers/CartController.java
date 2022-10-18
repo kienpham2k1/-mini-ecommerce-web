@@ -23,7 +23,7 @@ public class CartController {
         return iCartService.addToCart(newCart);
     }
     @PutMapping("")
-    ResponseEntity<ResponseObject> updateCart(@RequestBody Cart updateCart) {return iCartService.updateCartItem(updateCart);}
+    ResponseEntity<ResponseObject> updateCart(@RequestBody Cart updateCart) {return iCartService.updateCartItem(updateCart, 0);}
     @DeleteMapping("/{cartId}")
     ResponseEntity<ResponseObject> deleteCartItem(@PathVariable int cartId)
     {

@@ -28,32 +28,32 @@ public class ProductController {
     }
 
     // Get products by category id
-    @GetMapping("getProductsByCateId/{categoryId}")
+    @GetMapping("categoryId/{categoryId}")
     ResponseEntity<ResponseObject> getProductsByCategoryId(@PathVariable int categoryId) {
         return iProductService.getProductsByCategoryId(categoryId);
     }
 
     //
 //    // Get detail product by id
-    @GetMapping("/getProductById/{productId}")
+    @GetMapping("/ProductId/{productId}")
     ResponseEntity<ResponseObject> getProductById(@PathVariable int productId) {
         return iProductService.getProductDetailById(productId);
     }
 
     // Add product
-    @PostMapping("/addNewProduct")
+    @PostMapping("")
     ResponseEntity<ResponseObject> addNewProduct(@RequestBody Product newProduct) {
         return iProductService.addNewProduct(newProduct);
     }
 
     // Update Product
-    @PutMapping("updateProduct/{productId}")
+    @PutMapping("/{productId}")
     ResponseEntity<ResponseObject> updateProduct(@RequestBody Product newProduct, @PathVariable int productId) {
         return iProductService.updateProduct(newProduct, productId);
     }
 
     // Delete product by id
-    @DeleteMapping("/deleteProduct/{productId}")
+    @DeleteMapping("/{productId}")
     ResponseEntity<ResponseObject> deleteProduct(@PathVariable int productId) {
         return iProductService.deleteProduct(productId);
     }
