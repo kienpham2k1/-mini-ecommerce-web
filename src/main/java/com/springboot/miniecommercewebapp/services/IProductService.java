@@ -16,7 +16,7 @@ public interface IProductService {
 
     ResponseEntity<ResponseObject> addNewProduct(Product newProduct);
 
-    ResponseEntity<ResponseObject> updateProduct(Product newProduct, int id);
+    ResponseEntity<ResponseObject> updateProduct(Product newProduct, int id, int quantity);
 
     ResponseEntity<ResponseObject> deleteProduct(int id);
 }

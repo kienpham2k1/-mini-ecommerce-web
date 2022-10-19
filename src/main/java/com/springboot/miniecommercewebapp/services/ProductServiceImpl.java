@@ -97,13 +97,13 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> updateProduct(Product updateProduct, int id) {
-        Optional<Product> foundProduct = productRepository.findById(id)
+    public ResponseEntity<ResponseObject> updateProduct(Product updateProduct, int productId, int quantity) {
+        Optional<Product> foundProduct = productRepository.findById(productId)
                 .map(product -> {
                     product.setProductName(updateProduct.getProductName());
                     product.setImage(updateProduct.getImage());
                     product.setPrice(updateProduct.getPrice());
-                    product.setQuantity(updateProduct.getQuantity());
+                    product.setQuantity(updateProduct.getQuantity() - quantity);
                     product.setCatagoryId(updateProduct.getCatagoryId());
                     product.setStatus(updateProduct.isStatus());
                     product.setDescription(updateProduct.getDescription());

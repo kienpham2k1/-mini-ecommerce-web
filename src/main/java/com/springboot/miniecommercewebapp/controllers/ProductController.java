@@ -49,7 +49,7 @@ public class ProductController {
     // Update Product
     @PutMapping("/{productId}")
     ResponseEntity<ResponseObject> updateProduct(@RequestBody Product newProduct, @PathVariable int productId) {
-        return iProductService.updateProduct(newProduct, productId);
+        return iProductService.updateProduct(newProduct, productId, 0);
     }
 
     // Delete product by id
