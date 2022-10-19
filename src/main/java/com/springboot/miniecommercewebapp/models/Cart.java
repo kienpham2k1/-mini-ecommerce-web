@@ -26,6 +26,9 @@ public class Cart {
     @Basic
     @Column(name = "quantity", nullable = false)
     private int quantity;
+    @Basic
+    @Column(name = "price", nullable = true)
+    private double price;
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false,

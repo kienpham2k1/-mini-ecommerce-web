@@ -14,19 +14,22 @@ public class CartController {
     ICartService iCartService;
 
     @GetMapping("")
-    ResponseEntity<ResponseObject> getAllCartItem(@RequestParam(name = "userId") String userId)
-    {
+    ResponseEntity<ResponseObject> getAllCartItem(@RequestParam(name = "userId") String userId) {
         return iCartService.getCartItemsByUserId(userId);
     }
+
     @PostMapping("")
-    ResponseEntity<ResponseObject> addNewCart(@RequestBody Cart newCart){
+    ResponseEntity<ResponseObject> addNewCart(@RequestBody Cart newCart) {
         return iCartService.addToCart(newCart);
     }
-    @PutMapping("")
-    ResponseEntity<ResponseObject> updateCart(@RequestBody Cart updateCart) {return iCartService.updateCartItem(updateCart, 0);}
+
+    @PutMapping("{cartId}")
+    ResponseEntity<ResponseObject> updateCart(@PathVariable int cartId, @RequestBody Cart updateCart) {
+        return iCartService.updateCartItem(cartId, updateCart, 0);
+    }
+
     @DeleteMapping("/{cartId}")
-    ResponseEntity<ResponseObject> deleteCartItem(@PathVariable int cartId)
-    {
+    ResponseEntity<ResponseObject> deleteCartItem(@PathVariable int cartId) {
         return iCartService.deleteCartItem(cartId);
     }
 }
