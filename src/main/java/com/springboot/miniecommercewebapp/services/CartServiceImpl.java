@@ -1,6 +1,7 @@
 package com.springboot.miniecommercewebapp.services;
 
 import com.springboot.miniecommercewebapp.models.Cart;
+import com.springboot.miniecommercewebapp.models.Product;
 import com.springboot.miniecommercewebapp.models.ResponseObject;
 import com.springboot.miniecommercewebapp.repositories.CartRepository;
 import com.springboot.miniecommercewebapp.repositories.ProductRepository;
@@ -24,7 +25,7 @@ public class CartServiceImpl implements ICartService {
         // Should update with product quantity
         // Check product's quantity: need to check quantity is not less than product quantity
         // Need > 0 && Need <= product Quantity
-        Optional<Integer> quantityCheck; //= productRepository.findByProductIdAndQuantity(newCart.getProductId(), newCart.getQuantity());
+        Optional<Product> quantityCheck;
         Optional<Cart> foundCart = cartRepository.findByUserIdAndProductId(newCart.getUserId(), newCart.getProductId());
         // If is present, then update
         if (foundCart.isPresent()) {

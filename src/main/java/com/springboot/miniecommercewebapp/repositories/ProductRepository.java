@@ -13,6 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     List<Product> findByProductName(String productName);
 
-    @Query("select p.quantity from Product p where p.productId = ?1 and p.quantity >= ?2")
-    Optional<Integer> findByProductIdAndQuantity(int productId, int quantityCheck);
+    @Query("select p from Product p where p.productId = ?1 and p.quantity >= ?2")
+    Optional<Product> findByProductIdAndQuantity(int productId, int quantityCheck);
 }
