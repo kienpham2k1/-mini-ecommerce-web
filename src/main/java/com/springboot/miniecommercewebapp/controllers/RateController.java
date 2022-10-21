@@ -1,8 +1,8 @@
 package com.springboot.miniecommercewebapp.controllers;
 
 import com.springboot.miniecommercewebapp.models.Rating;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
-import com.springboot.miniecommercewebapp.services.IRatingService;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
+import com.springboot.miniecommercewebapp.services.rateService.IRatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

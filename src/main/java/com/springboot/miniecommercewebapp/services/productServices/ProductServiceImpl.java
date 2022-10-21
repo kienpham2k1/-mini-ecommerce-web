@@ -1,7 +1,7 @@
-package com.springboot.miniecommercewebapp.services;
+package com.springboot.miniecommercewebapp.services.productServices;
 
 import com.springboot.miniecommercewebapp.models.Product;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +21,10 @@ public class ProductServiceImpl implements IProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    /* Authorization with role:
+     If user: Get products is only in-stock;
+     If admin: Get all products
+     */
     @Override
     public ResponseEntity<ResponseObject> getAllProducts() {
         List<Product> listProducts = productRepository.findAll();
@@ -83,17 +87,28 @@ public class ProductServiceImpl implements IProductService {
         }
     }
 
+    /*
+    Add new product:
+        Check constrain: + Product name ?
+                         + Price > 0
+                         + Quantity > 0
+                    ???  + Status must is in-stock
+                         + Description
+                         + Create date is the time local
+    */
     @Override
     public ResponseEntity<ResponseObject> addNewProduct(Product newProduct) {
         List<Product> foundProducts = productRepository.findByProductName(newProduct.getProductName().trim());
+
         if (foundProducts.size() > 0)
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new ResponseObject("failed", "Insert not successfully, product name already taken!", null)
             );
         else
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Insert successfully!", productRepository.save(newProduct))
-            );
+            newProduct.setCreatedDate(Date.valueOf(java.time.LocalDate.now()));
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Insert successfully!", productRepository.save(newProduct))
+        );
     }
 
     @Override
@@ -105,6 +120,9 @@ public class ProductServiceImpl implements IProductService {
                     product.setPrice(updateProduct.getPrice());
                     product.setQuantity(updateProduct.getQuantity() - quantity);
                     product.setCatagoryId(updateProduct.getCatagoryId());
+//                    if ((updateProduct.getQuantity() - quantity) == 0) {
+//                        // Set status out of stock
+//                    } else
                     product.setStatus(updateProduct.isStatus());
                     product.setDescription(updateProduct.getDescription());
                     product.setCreatedDate(Date.valueOf(java.time.LocalDate.now()));
@@ -122,13 +140,36 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> deleteProduct(int id) {
-        Optional<Product> deleteProduct = productRepository.findById(id)
+    public ResponseEntity<ResponseObject> updateProduct(int id, int quantity) {
+        Optional<Product> cs = productRepository.findById(id);
+        Optional<Product> foundProduct = productRepository.findById(id)
+                .map(product -> {
+                    product.setQuantity(cs.get().getQuantity() - quantity);
+//                    if ((updateProduct.getQuantity() - quantity) == 0) {
+//                        // Set status out of stock
+//                    } else
+                    return productRepository.save(product);
+                });
+        if (foundProduct.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", "Product not found!", "")
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Update successfully!", cs)
+            );
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> updateStatusProduct(int id, int newStatus) {
+        Optional<Product> updateProduct = productRepository.findById(id)
                 .map(product -> {
                     product.setStatus(false);
-                    return  product;
+//                    product.setStatus(newStatus);
+                    return productRepository.save(product);
                 });
-        if (deleteProduct.isPresent()) {
+        if (updateProduct.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Delete successfully!", "")
             );

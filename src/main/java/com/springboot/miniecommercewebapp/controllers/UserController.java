@@ -1,8 +1,8 @@
 package com.springboot.miniecommercewebapp.controllers;
 
-import com.springboot.miniecommercewebapp.models.ResponseObject;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.models.User;
-import com.springboot.miniecommercewebapp.services.IUserService;
+import com.springboot.miniecommercewebapp.services.userService.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

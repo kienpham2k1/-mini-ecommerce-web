@@ -1,7 +1,7 @@
-package com.springboot.miniecommercewebapp.services;
+package com.springboot.miniecommercewebapp.services.categoryService;
 
 import com.springboot.miniecommercewebapp.models.Category;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

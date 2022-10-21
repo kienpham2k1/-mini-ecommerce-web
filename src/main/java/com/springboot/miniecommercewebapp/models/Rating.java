@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -19,12 +22,17 @@ public class Rating {
     private int ratingId;
     @Basic
     @Column(name = "productID", nullable = false)
+    @NotNull(message = "Product id reference can not be null")
     private int productId;
     @Basic
     @Column(name = "userID", nullable = false, length = 20)
+    @NotNull(message = "User id reference can not be null")
     private String userId;
     @Basic
     @Column(name = "score", nullable = false)
+    @NotNull(message = "Score can not be null")
+    @Min(value = 0, message = "Score can not be negative")
+    @Max(value = 10, message = "Score can not be greater than 10")
     private int score;
     @ManyToOne
     @JsonIgnore

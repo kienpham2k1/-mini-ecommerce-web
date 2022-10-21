@@ -1,7 +1,7 @@
-package com.springboot.miniecommercewebapp.services;
+package com.springboot.miniecommercewebapp.services.cartService;
 
 import com.springboot.miniecommercewebapp.models.Cart;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import org.springframework.http.ResponseEntity;
 
 public interface ICartService {

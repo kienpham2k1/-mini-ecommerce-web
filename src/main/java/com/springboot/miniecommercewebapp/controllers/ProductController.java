@@ -1,11 +1,13 @@
 package com.springboot.miniecommercewebapp.controllers;
 
 import com.springboot.miniecommercewebapp.models.Product;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
-import com.springboot.miniecommercewebapp.services.IProductService;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
+import com.springboot.miniecommercewebapp.services.productServices.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/products")
@@ -42,20 +44,20 @@ public class ProductController {
 
     // Add product
     @PostMapping("")
-    ResponseEntity<ResponseObject> addNewProduct(@RequestBody Product newProduct) {
+    ResponseEntity<ResponseObject> addNewProduct(@RequestBody @Valid Product newProduct) {
         return iProductService.addNewProduct(newProduct);
     }
 
     // Update Product
     @PutMapping("/{productId}")
-    ResponseEntity<ResponseObject> updateProduct(@RequestBody Product newProduct, @PathVariable int productId) {
+    ResponseEntity<ResponseObject> updateProduct(@RequestBody @Valid Product newProduct, @PathVariable int productId) {
         return iProductService.updateProduct(newProduct, productId, 0);
     }
 
     // Delete product by id
     @DeleteMapping("/{productId}")
-    ResponseEntity<ResponseObject> deleteProduct(@PathVariable int productId) {
-        return iProductService.deleteProduct(productId);
+    ResponseEntity<ResponseObject> deleteProduct(@PathVariable int productId, int newStatus) {
+        return iProductService.updateStatusProduct(productId, newStatus);
     }
 
 }

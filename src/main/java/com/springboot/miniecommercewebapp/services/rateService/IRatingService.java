@@ -1,7 +1,7 @@
-package com.springboot.miniecommercewebapp.services;
+package com.springboot.miniecommercewebapp.services.rateService;
 
 import com.springboot.miniecommercewebapp.models.Rating;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import org.springframework.http.ResponseEntity;
 
 public interface IRatingService {

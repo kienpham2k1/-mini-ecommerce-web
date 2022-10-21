@@ -1,8 +1,8 @@
-package com.springboot.miniecommercewebapp.services;
+package com.springboot.miniecommercewebapp.services.orderDetailService;
 
 import com.springboot.miniecommercewebapp.models.Cart;
 import com.springboot.miniecommercewebapp.models.OrderDetail;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import org.springframework.http.ResponseEntity;
 
 public interface IOrderDetailService {

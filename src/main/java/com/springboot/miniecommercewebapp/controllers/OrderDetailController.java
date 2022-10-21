@@ -2,8 +2,8 @@ package com.springboot.miniecommercewebapp.controllers;
 
 import com.springboot.miniecommercewebapp.models.Cart;
 import com.springboot.miniecommercewebapp.models.OrderDetail;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
-import com.springboot.miniecommercewebapp.services.IOrderDetailService;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
+import com.springboot.miniecommercewebapp.services.orderDetailService.IOrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

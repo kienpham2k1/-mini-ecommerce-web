@@ -1,4 +1,4 @@
-package com.springboot.miniecommercewebapp.models;
+package com.springboot.miniecommercewebapp.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

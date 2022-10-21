@@ -1,10 +1,9 @@
-package com.springboot.miniecommercewebapp.services;
+package com.springboot.miniecommercewebapp.services.adminService;
 
 import com.springboot.miniecommercewebapp.models.Admin;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.models.User;
 import com.springboot.miniecommercewebapp.repositories.AdminRepository;
-import com.springboot.miniecommercewebapp.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class AdminServiceImpl implements IAdminService{
+public class AdminServiceImpl implements IAdminService {
     @Autowired AdminRepository adminRepository;
     public ResponseEntity<ResponseObject> login(String userId, String password) {
         Optional<Admin> loginUser = adminRepository.findByUserIdAndPassword(userId, password);

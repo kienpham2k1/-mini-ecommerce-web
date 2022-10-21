@@ -1,8 +1,8 @@
-package com.springboot.miniecommercewebapp.services;
+package com.springboot.miniecommercewebapp.services.cartService;
 
 import com.springboot.miniecommercewebapp.models.Cart;
 import com.springboot.miniecommercewebapp.models.Product;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.repositories.CartRepository;
 import com.springboot.miniecommercewebapp.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,16 @@ public class CartServiceImpl implements ICartService {
     ProductRepository productRepository;
 
     @Override
+    public ResponseEntity<ResponseObject> getCartItemsByUserId(String userId) {
+        List<Cart> foundCarts = cartRepository.findByUserId(userId);
+        if (!foundCarts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "Successfully!", foundCarts));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("failed", "Not found cart items!", null));
+        }
+    }
+
+    @Override
     public ResponseEntity<ResponseObject> addToCart(Cart newCart) {
         // Should update with product quantity
         // Check product's quantity: need to check quantity is not less than product quantity
@@ -31,9 +41,13 @@ public class CartServiceImpl implements ICartService {
         if (foundCart.isPresent()) {
             quantityCheck = productRepository.findByProductIdAndQuantity(newCart.getProductId(), newCart.getQuantity() + foundCart.get().getQuantity());
             if (quantityCheck.isPresent()) {
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "Update to cart successfully!", updateCartItem(foundCart.get().getCartId(), newCart, newCart.getQuantity())));
+//                Optional<Cart> updateCart = ;
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Update to cart successfully!",
+                                updateCartItem(foundCart.get().getCartId(), foundCart.get(), newCart.getQuantity())));
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("failed", "Product have not enough quantity", ""));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject("failed", "Product have not enough quantity", ""));
             }
         }
         // If is not exist, then add new
@@ -49,24 +63,15 @@ public class CartServiceImpl implements ICartService {
 
     }
 
-    @Override
-    public ResponseEntity<ResponseObject> getCartItemsByUserId(String userId) {
-        List<Cart> foundCarts = cartRepository.findByUserId(userId);
-        if (!foundCarts.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "Successfully!", foundCarts));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("failed", "Not found cart items!", null));
-        }
-    }
 
     @Override
-    public ResponseEntity<ResponseObject> updateCartItem(int cartId, Cart updateCart, int plus) {
+    public ResponseEntity<ResponseObject> updateCartItem(int cartId, Cart updateCart, int quantityPlus) {
         Optional<Cart> foundCart = cartRepository.findByUserIdAndProductId(updateCart.getUserId(), updateCart.getProductId());
         if (foundCart.isPresent()) {
             if (productRepository.findByProductIdAndQuantity(updateCart.getProductId(), updateCart.getQuantity()).isPresent()) {
                 foundCart.map(cart -> {
-                    cart.setQuantity(updateCart.getQuantity() + plus);
-                    cart.setPrice(productRepository.findById(cart.getProductId()).get().getPrice() * (updateCart.getQuantity() + plus));
+                    cart.setQuantity(updateCart.getQuantity() + quantityPlus);
+                    cart.setPrice(productRepository.findById(cart.getProductId()).get().getPrice() * (updateCart.getQuantity()));
                     return cartRepository.save(cart);
                 });
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "Update Successfully!", foundCart));

@@ -1,11 +1,13 @@
 package com.springboot.miniecommercewebapp.controllers;
 
 import com.springboot.miniecommercewebapp.models.Cart;
-import com.springboot.miniecommercewebapp.models.ResponseObject;
-import com.springboot.miniecommercewebapp.services.ICartService;
+import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
+import com.springboot.miniecommercewebapp.services.cartService.ICartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/cart")
@@ -19,7 +21,7 @@ public class CartController {
     }
 
     @PostMapping("")
-    ResponseEntity<ResponseObject> addNewCart(@RequestBody Cart newCart) {
+    ResponseEntity<ResponseObject> addNewCart(@RequestBody @Valid  Cart newCart) {
         return iCartService.addToCart(newCart);
     }
 
