@@ -1,6 +1,6 @@
 package com.springboot.miniecommercewebapp.controllers;
 
-import com.springboot.miniecommercewebapp.models.Admin;
+import com.springboot.miniecommercewebapp.models.AdminEntity;
 import com.springboot.miniecommercewebapp.repositories.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ public class AdminController {
     @Autowired
     AdminRepository adminRepository;
     @GetMapping("")
-    List<Admin> getAllUsers(){
+    List<AdminEntity> getAllUsers(){
         return  adminRepository.findAll();
     }
 }

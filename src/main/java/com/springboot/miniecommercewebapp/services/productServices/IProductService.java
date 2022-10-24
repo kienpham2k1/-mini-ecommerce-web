@@ -1,6 +1,6 @@
 package com.springboot.miniecommercewebapp.services.productServices;
 
-import com.springboot.miniecommercewebapp.models.Product;
+import com.springboot.miniecommercewebapp.models.ProductEntity;
 import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import org.springframework.http.ResponseEntity;
 
@@ -14,10 +14,10 @@ public interface IProductService {
 
     ResponseEntity<ResponseObject> getProductDetailById(int id);
 
-    ResponseEntity<ResponseObject> addNewProduct(Product newProduct);
+    ResponseEntity<ResponseObject> addNewProduct(ProductEntity newProduct);
 
     // Update full
-    ResponseEntity<ResponseObject> updateProduct(Product newProduct, int id, int quantity);
+    ResponseEntity<ResponseObject> updateProduct(ProductEntity newProduct, int id, int quantity);
 
     // Update quantity
     ResponseEntity<ResponseObject> updateProduct(int id, int quantity);

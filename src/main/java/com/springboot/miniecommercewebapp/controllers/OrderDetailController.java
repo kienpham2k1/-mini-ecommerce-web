@@ -1,7 +1,7 @@
 package com.springboot.miniecommercewebapp.controllers;
 
-import com.springboot.miniecommercewebapp.models.Cart;
-import com.springboot.miniecommercewebapp.models.OrderDetail;
+import com.springboot.miniecommercewebapp.models.CartEntity;
+import com.springboot.miniecommercewebapp.models.OrderDetailEntity;
 import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.services.orderDetailService.IOrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +20,11 @@ public class OrderDetailController {
     }
 
     @PostMapping("{orderId}")
-    ResponseEntity<ResponseObject> addNewOrderDetail(@PathVariable int orderId, @RequestBody Cart cartItem) {
+    ResponseEntity<ResponseObject> addNewOrderDetail(@PathVariable int orderId, @RequestBody CartEntity cartItem) {
         return iOrderDetailService.addOrderItem(orderId, cartItem);
     }
     @PutMapping()
-    ResponseEntity<ResponseObject> cancelOrderDetail(@RequestBody OrderDetail candelOderItem) {
+    ResponseEntity<ResponseObject> cancelOrderDetail(@RequestBody OrderDetailEntity candelOderItem) {
         return iOrderDetailService.cancelOrderDetail(candelOderItem);
     }
 }

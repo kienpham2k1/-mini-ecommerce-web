@@ -1,8 +1,8 @@
 package com.springboot.miniecommercewebapp.services.rateService;
 
-import com.springboot.miniecommercewebapp.models.Rating;
+import com.springboot.miniecommercewebapp.models.RateEntity;
 import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
-import com.springboot.miniecommercewebapp.repositories.RatingRepository;
+import com.springboot.miniecommercewebapp.repositories.RateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RatingServiceImpl implements IRatingService {
+public class RateServiceImpl implements IRateService {
     @Autowired
-    RatingRepository ratingRepository;
+    RateRepository ratingRepository;
 
     @Override
     public ResponseEntity<ResponseObject> getALlRatingByProductId(int productId) {
-        List<Rating> ratingList = ratingRepository.findByProductId(productId);
+        List<RateEntity> ratingList = ratingRepository.findByProductId(productId);
         if (ratingList.size() > 0) {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "OK", ratingList));
         } else
@@ -27,7 +27,7 @@ public class RatingServiceImpl implements IRatingService {
 
     @Override
     public ResponseEntity<ResponseObject> getRatingDetail(int productId, String userId) {
-        Optional<Rating> foundRatingDetail = ratingRepository.findByProductIdAndUserId(productId, userId);
+        Optional<RateEntity> foundRatingDetail = ratingRepository.findByProductIdAndUserId(productId, userId);
         if (foundRatingDetail.isPresent())
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Ok", "OK", foundRatingDetail));
         else
@@ -35,8 +35,8 @@ public class RatingServiceImpl implements IRatingService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> addNewRate(Rating newRating) {
-        Optional<Rating> foundRatingDetail = ratingRepository.findByProductIdAndUserId(newRating.getProductId(), newRating.getUserId());
+    public ResponseEntity<ResponseObject> addNewRate(RateEntity newRating) {
+        Optional<RateEntity> foundRatingDetail = ratingRepository.findByProductIdAndUserId(newRating.getProductId(), newRating.getUserId());
         if (foundRatingDetail.isEmpty())
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Ok", "OK", ratingRepository.save(newRating)));
         else
@@ -44,8 +44,8 @@ public class RatingServiceImpl implements IRatingService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> updateRate(Rating updateRatting) {
-        Optional<Rating> foundRatingDetail = ratingRepository.findByProductIdAndUserId(updateRatting.getProductId(), updateRatting.getUserId())
+    public ResponseEntity<ResponseObject> updateRate(RateEntity updateRatting) {
+        Optional<RateEntity> foundRatingDetail = ratingRepository.findByProductIdAndUserId(updateRatting.getProductId(), updateRatting.getUserId())
                 .map(rating -> {
                     rating.setScore(updateRatting.getScore());
                     return ratingRepository.save(rating);

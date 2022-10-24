@@ -1,6 +1,6 @@
 package com.springboot.miniecommercewebapp.controllers;
 
-import com.springboot.miniecommercewebapp.models.Cart;
+import com.springboot.miniecommercewebapp.models.CartEntity;
 import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.services.cartService.ICartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ public class CartController {
     }
 
     @PostMapping("")
-    ResponseEntity<ResponseObject> addNewCart(@RequestBody @Valid  Cart newCart) {
+    ResponseEntity<ResponseObject> addNewCart(@RequestBody @Valid CartEntity newCart) {
         return iCartService.addToCart(newCart);
     }
 
     @PutMapping("{cartId}")
-    ResponseEntity<ResponseObject> updateCart(@PathVariable int cartId, @RequestBody Cart updateCart) {
+    ResponseEntity<ResponseObject> updateCart(@PathVariable int cartId, @RequestBody CartEntity updateCart) {
         return iCartService.updateCartItem(cartId, updateCart, 0);
     }
 

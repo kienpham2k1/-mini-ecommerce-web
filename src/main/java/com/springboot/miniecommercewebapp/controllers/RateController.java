@@ -1,8 +1,8 @@
 package com.springboot.miniecommercewebapp.controllers;
 
-import com.springboot.miniecommercewebapp.models.Rating;
+import com.springboot.miniecommercewebapp.models.RateEntity;
 import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
-import com.springboot.miniecommercewebapp.services.rateService.IRatingService;
+import com.springboot.miniecommercewebapp.services.rateService.IRateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/rate")
 public class RateController {
     @Autowired
-    IRatingService iRatingService;
+    IRateService iRatingService;
 
     @GetMapping("{productId}")
     ResponseEntity<ResponseObject> getAllRateOfProduct(@PathVariable int productId) {
@@ -24,12 +24,12 @@ public class RateController {
     }
 
     @PostMapping("")
-    ResponseEntity<ResponseObject> addNewRating(@RequestBody Rating rate) {
+    ResponseEntity<ResponseObject> addNewRating(@RequestBody RateEntity rate) {
         return iRatingService.addNewRate(rate);
     }
 
     @PutMapping("")
-    ResponseEntity<ResponseObject> updateRating(@RequestBody Rating rate) {
+    ResponseEntity<ResponseObject> updateRating(@RequestBody RateEntity rate) {
         return iRatingService.updateRate(rate);
     }
 

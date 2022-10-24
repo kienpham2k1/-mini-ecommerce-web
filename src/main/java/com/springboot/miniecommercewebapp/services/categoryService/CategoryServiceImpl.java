@@ -1,6 +1,6 @@
 package com.springboot.miniecommercewebapp.services.categoryService;
 
-import com.springboot.miniecommercewebapp.models.Category;
+import com.springboot.miniecommercewebapp.models.CategoryEntity;
 import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public ResponseEntity<ResponseObject> getAllCategories() {
-        List<Category> categoryList = categoryRepository.findAll();
+        List<CategoryEntity> categoryList = categoryRepository.findAll();
         if (categoryList.size() > 0) return
                 ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "OK", categoryList));
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("failed", "Not Found", ""));
@@ -26,7 +26,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public ResponseEntity<ResponseObject> getCategoyById(int categoryId) {
-        Optional<Category> category = categoryRepository.findById(categoryId);
+        Optional<CategoryEntity> category = categoryRepository.findById(categoryId);
         if (category.isPresent())
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "OK", category));
         else
@@ -34,8 +34,8 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> addCategory(Category newCategory) {
-        Optional<Category> foundCategory = categoryRepository.findByCatagoryName(newCategory.getCatagoryName());
+    public ResponseEntity<ResponseObject> addCategory(CategoryEntity newCategory) {
+        Optional<CategoryEntity> foundCategory = categoryRepository.findByCatagoryName(newCategory.getCatagoryName());
         if (foundCategory.isEmpty())
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "Insert successfully", categoryRepository.save(newCategory)));
         else
@@ -43,8 +43,8 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> updateCategory(Category updateCategory, int categoryId) {
-        Optional<Category> foundCategory = categoryRepository.findById(categoryId)
+    public ResponseEntity<ResponseObject> updateCategory(CategoryEntity updateCategory, int categoryId) {
+        Optional<CategoryEntity> foundCategory = categoryRepository.findById(categoryId)
                 .map(category -> {
                     category.setCatagoryName(updateCategory.getCatagoryName());
                     category.setDescription(updateCategory.getDescription());

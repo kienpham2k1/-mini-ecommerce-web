@@ -13,7 +13,7 @@ import java.util.Collection;
 @Entity
 @Data
 @Table(name = "tblRoles", schema = "dbo", catalog = "MiniEcommerce")
-public class Role {
+public class RoleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "roleID", nullable = false)
@@ -23,8 +23,8 @@ public class Role {
     private String roleName;
     @OneToMany(mappedBy = "tblRolesByRoleId")
     @JsonIgnore
-    private Collection<Admin> tblAdminsByRoleId;
+    private Collection<AdminEntity> tblAdminsByRoleId;
     @OneToMany(mappedBy = "tblRolesByRoleId")
     @JsonIgnore
-    private Collection<User> tblUsersByRoleId;
+    private Collection<UserEntity> tblUsersByRoleId;
 }

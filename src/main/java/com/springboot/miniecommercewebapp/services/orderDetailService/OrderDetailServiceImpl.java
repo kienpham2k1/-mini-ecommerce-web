@@ -33,7 +33,7 @@ public class OrderDetailServiceImpl implements IOrderDetailService {
 
     @Override
     public ResponseEntity<ResponseObject> getOrderItemsByOrderId(int orderId) {
-        List<OrderDetail> orderDetailList = orderDetailRepository.findByOrderId(orderId);
+        List<OrderDetailEntity> orderDetailList = orderDetailRepository.findByOrderId(orderId);
         if (orderDetailList.size() > 0) {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "List found", orderDetailList));
         } else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("failed", "Not found", ""));
@@ -41,17 +41,17 @@ public class OrderDetailServiceImpl implements IOrderDetailService {
 
     // When add ; Delete to current product quantity
     @Override
-    public ResponseEntity<ResponseObject> addOrderItem(int orderId, Cart cartItem) {
+    public ResponseEntity<ResponseObject> addOrderItem(int orderId, CartEntity cartItem) {
         // Check cart, must exist to delete, to get i4
         boolean foundCart = cartRepository.findById(cartItem.getCartId()).isPresent();
         // Check Order, must exist to mapping
         boolean foundOrder = orderRepository.findById(orderId).isPresent();
         // Check product, must exist to update quantity
-        Optional<Product> foundProduct = productRepository.findByProductIdAndQuantity(cartItem.getProductId(), cartItem.getQuantity());
+        Optional<ProductEntity> foundProduct = productRepository.findByProductIdAndQuantity(cartItem.getProductId(), cartItem.getQuantity());
         if (foundProduct.isPresent()) {
             if (foundOrder) {
                 if (foundCart) {
-                    OrderDetail newOrderDetail = new OrderDetail(null, cartItem.getQuantity(), cartItem.getPrice(), orderId, cartItem.getProductId(), null, null);
+                    OrderDetailEntity newOrderDetail = new OrderDetailEntity(null, cartItem.getQuantity(), cartItem.getPrice(), orderId, cartItem.getProductId(), null, null);
                     orderDetailRepository.save(newOrderDetail);
                     iCartService.deleteCartItem(cartItem.getCartId());
                     iProductService.updateProduct(foundProduct.get().getProductId(), cartItem.getQuantity());
@@ -68,8 +68,8 @@ public class OrderDetailServiceImpl implements IOrderDetailService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> cancelOrderDetail(OrderDetail cancelOrderDetail) {
-        Optional<Product> foundProduct = productRepository.findById(cancelOrderDetail.getProductId());
+    public ResponseEntity<ResponseObject> cancelOrderDetail(OrderDetailEntity cancelOrderDetail) {
+        Optional<ProductEntity> foundProduct = productRepository.findById(cancelOrderDetail.getProductId());
         if (foundProduct.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("failed", "Product not found", iProductService.updateProduct(foundProduct.get(), foundProduct.get().getProductId(), -(cancelOrderDetail.getQuantity()))));
         } else {

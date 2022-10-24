@@ -14,7 +14,7 @@ import java.util.Collection;
 @Entity
 @Data
 @Table(name = "tblUsers", schema = "dbo", catalog = "MiniEcommerce")
-public class User {
+public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "userID", nullable = false, length = 20)
@@ -43,18 +43,18 @@ public class User {
     @Basic
     @Column(name = "status", nullable = false)
     private boolean status;
-    @OneToMany(mappedBy = "tblUsersByUserId")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tblUsersByUserId")
     @JsonIgnore
-    private Collection<Cart> tblCartsByUserId;
-    @OneToMany(mappedBy = "tblUsersByUserId")
+    private Collection<CartEntity> tblCartsByUserId;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tblUsersByUserId")
     @JsonIgnore
-    private Collection<Order> tblOrdersByUserId;
-    @OneToMany(mappedBy = "tblUsersByUserId")
+    private Collection<OrderEntity> tblOrdersByUserId;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tblUsersByUserId")
     @JsonIgnore
-    private Collection<Rating> tblRatingsByUserId;
-    @ManyToOne
+    private Collection<RateEntity> tblRatingsByUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "roleID", referencedColumnName = "roleID", nullable = false,
-            insertable = false, updatable=false)
-    private Role tblRolesByRoleId;
+            insertable = false, updatable = false)
+    private RoleEntity tblRolesByRoleId;
 }

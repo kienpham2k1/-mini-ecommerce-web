@@ -1,6 +1,6 @@
 package com.springboot.miniecommercewebapp.controllers;
 
-import com.springboot.miniecommercewebapp.models.Category;
+import com.springboot.miniecommercewebapp.models.CategoryEntity;
 import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.services.categoryService.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +24,12 @@ public class CategoryController {
     }
 
     @PostMapping()
-    ResponseEntity<ResponseObject> addNewCategory(@RequestBody Category newCategory) {
+    ResponseEntity<ResponseObject> addNewCategory(@RequestBody CategoryEntity newCategory) {
         return iCategoryService.addCategory(newCategory);
     }
 
     @PutMapping("{categoryId}")
-    ResponseEntity<ResponseObject> updateCategory(@RequestBody Category updateCategory, @PathVariable int categoryId) {
+    ResponseEntity<ResponseObject> updateCategory(@RequestBody CategoryEntity updateCategory, @PathVariable int categoryId) {
         return iCategoryService.updateCategory(updateCategory, categoryId);
     }
 

@@ -1,7 +1,7 @@
 package com.springboot.miniecommercewebapp.services.cartService;
 
-import com.springboot.miniecommercewebapp.models.Cart;
-import com.springboot.miniecommercewebapp.models.Product;
+import com.springboot.miniecommercewebapp.models.CartEntity;
+import com.springboot.miniecommercewebapp.models.ProductEntity;
 import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.repositories.CartRepository;
 import com.springboot.miniecommercewebapp.repositories.ProductRepository;
@@ -22,7 +22,7 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     public ResponseEntity<ResponseObject> getCartItemsByUserId(String userId) {
-        List<Cart> foundCarts = cartRepository.findByUserId(userId);
+        List<CartEntity> foundCarts = cartRepository.findByUserId(userId);
         if (!foundCarts.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "Successfully!", foundCarts));
         } else {
@@ -31,12 +31,12 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> addToCart(Cart newCart) {
+    public ResponseEntity<ResponseObject> addToCart(CartEntity newCart) {
         // Should update with product quantity
         // Check product's quantity: need to check quantity is not less than product quantity
         // Need > 0 && Need <= product Quantity
-        Optional<Product> quantityCheck;
-        Optional<Cart> foundCart = cartRepository.findByUserIdAndProductId(newCart.getUserId(), newCart.getProductId());
+        Optional<ProductEntity> quantityCheck;
+        Optional<CartEntity> foundCart = cartRepository.findByUserIdAndProductId(newCart.getUserId(), newCart.getProductId());
         // If is present, then update
         if (foundCart.isPresent()) {
             quantityCheck = productRepository.findByProductIdAndQuantity(newCart.getProductId(), newCart.getQuantity() + foundCart.get().getQuantity());
@@ -65,8 +65,8 @@ public class CartServiceImpl implements ICartService {
 
 
     @Override
-    public ResponseEntity<ResponseObject> updateCartItem(int cartId, Cart updateCart, int quantityPlus) {
-        Optional<Cart> foundCart = cartRepository.findByUserIdAndProductId(updateCart.getUserId(), updateCart.getProductId());
+    public ResponseEntity<ResponseObject> updateCartItem(int cartId, CartEntity updateCart, int quantityPlus) {
+        Optional<CartEntity> foundCart = cartRepository.findByUserIdAndProductId(updateCart.getUserId(), updateCart.getProductId());
         if (foundCart.isPresent()) {
             if (productRepository.findByProductIdAndQuantity(updateCart.getProductId(), updateCart.getQuantity()).isPresent()) {
                 foundCart.map(cart -> {

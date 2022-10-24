@@ -1,7 +1,7 @@
 package com.springboot.miniecommercewebapp.services.userService;
 
 import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
-import com.springboot.miniecommercewebapp.models.User;
+import com.springboot.miniecommercewebapp.models.UserEntity;
 import com.springboot.miniecommercewebapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,19 +14,8 @@ import java.util.Optional;
 public class UserServiceImpl implements IUserService {
     @Autowired
     UserRepository userRepository;
-
-    public ResponseEntity<ResponseObject> login(String userId, String password) {
-        Optional<User> loginUser = userRepository.findUserByUserIdAndPassword(userId, password);
-        if (loginUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Login successfully!", loginUser));
-        } else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Login fail!", null));
-    }
-
-    public ResponseEntity<ResponseObject> register(User newUser) {
-        Optional<User> foundUser = userRepository.findById(newUser.getUserId());
+    public ResponseEntity<ResponseObject> register(UserEntity newUser) {
+        Optional<UserEntity> foundUser = userRepository.findById(newUser.getUserId());
         if (foundUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Insert successfully!", null));
@@ -36,8 +25,8 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
-    public ResponseEntity<ResponseObject> updateUser(User newUser, String id) {
-        Optional<User> updateUser = userRepository.findById(id)
+    public ResponseEntity<ResponseObject> updateUser(UserEntity newUser, String id) {
+        Optional<UserEntity> updateUser = userRepository.findById(id)
                 .map(user -> {
                     user.setFullName(newUser.getFullName());
                     user.setPassword(newUser.getPassword());
@@ -60,7 +49,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     public ResponseEntity<ResponseObject> deleteUser(String userId) {
-        Optional<User> deleteUser = userRepository.findById(userId)
+        Optional<UserEntity> deleteUser = userRepository.findById(userId)
                 .map(user -> {
                     user.setStatus(false);
                     return userRepository.save(user);

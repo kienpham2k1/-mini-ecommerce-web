@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Data
 @Table(name = "tblRatings", schema = "dbo", catalog = "MiniEcommerce")
-public class Rating {
+public class RateEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ratingID", nullable = false)
@@ -38,10 +38,10 @@ public class Rating {
     @JsonIgnore
     @JoinColumn(name = "productID", referencedColumnName = "productID", nullable = false,
             insertable = false, updatable=false)
-    private Product tblProductsByProductId;
+    private ProductEntity tblProductsByProductId;
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false,
             insertable = false, updatable=false)
-    private User tblUsersByUserId;
+    private UserEntity tblUsersByUserId;
 }

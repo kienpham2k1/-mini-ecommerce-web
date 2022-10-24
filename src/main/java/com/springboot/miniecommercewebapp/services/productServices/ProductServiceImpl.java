@@ -1,6 +1,6 @@
 package com.springboot.miniecommercewebapp.services.productServices;
 
-import com.springboot.miniecommercewebapp.models.Product;
+import com.springboot.miniecommercewebapp.models.ProductEntity;
 import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
 import com.springboot.miniecommercewebapp.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class ProductServiceImpl implements IProductService {
      */
     @Override
     public ResponseEntity<ResponseObject> getAllProducts() {
-        List<Product> listProducts = productRepository.findAll();
+        List<ProductEntity> listProducts = productRepository.findAll();
         if (!listProducts.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Product found", listProducts)
@@ -47,7 +47,7 @@ public class ProductServiceImpl implements IProductService {
         } else if (sort.equals("DESC")) {
             pageable = PageRequest.of(page, size, Sort.by(sortable.trim()).ascending());
         }
-        Page<Product> pg = productRepository.findAll(pageable);
+        Page<ProductEntity> pg = productRepository.findAll(pageable);
         if (!pg.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Product found", pg)
@@ -61,7 +61,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ResponseEntity<ResponseObject> getProductsByCategoryId(int categoryId) {
-        List<Product> foundProducts = productRepository.findByCatagoryId(categoryId);
+        List<ProductEntity> foundProducts = productRepository.findByCatagoryId(categoryId);
         if (!foundProducts.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Product found", foundProducts)
@@ -75,7 +75,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ResponseEntity<ResponseObject> getProductDetailById(int id) {
-        Optional<Product> foundProduct = productRepository.findById(id);
+        Optional<ProductEntity> foundProduct = productRepository.findById(id);
         if (foundProduct.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Product found", foundProduct)
@@ -97,8 +97,8 @@ public class ProductServiceImpl implements IProductService {
                          + Create date is the time local
     */
     @Override
-    public ResponseEntity<ResponseObject> addNewProduct(Product newProduct) {
-        List<Product> foundProducts = productRepository.findByProductName(newProduct.getProductName().trim());
+    public ResponseEntity<ResponseObject> addNewProduct(ProductEntity newProduct) {
+        List<ProductEntity> foundProducts = productRepository.findByProductName(newProduct.getProductName().trim());
 
         if (foundProducts.size() > 0)
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -112,8 +112,8 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> updateProduct(Product updateProduct, int productId, int quantity) {
-        Optional<Product> foundProduct = productRepository.findById(productId)
+    public ResponseEntity<ResponseObject> updateProduct(ProductEntity updateProduct, int productId, int quantity) {
+        Optional<ProductEntity> foundProduct = productRepository.findById(productId)
                 .map(product -> {
                     product.setProductName(updateProduct.getProductName());
                     product.setImage(updateProduct.getImage());
@@ -141,8 +141,8 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ResponseEntity<ResponseObject> updateProduct(int id, int quantity) {
-        Optional<Product> cs = productRepository.findById(id);
-        Optional<Product> foundProduct = productRepository.findById(id)
+        Optional<ProductEntity> cs = productRepository.findById(id);
+        Optional<ProductEntity> foundProduct = productRepository.findById(id)
                 .map(product -> {
                     product.setQuantity(cs.get().getQuantity() - quantity);
 //                    if ((updateProduct.getQuantity() - quantity) == 0) {
@@ -163,7 +163,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ResponseEntity<ResponseObject> updateStatusProduct(int id, int newStatus) {
-        Optional<Product> updateProduct = productRepository.findById(id)
+        Optional<ProductEntity> updateProduct = productRepository.findById(id)
                 .map(product -> {
                     product.setStatus(false);
 //                    product.setStatus(newStatus);

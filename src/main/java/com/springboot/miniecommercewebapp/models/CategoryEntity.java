@@ -13,7 +13,7 @@ import java.util.Collection;
 @Entity
 @Data
 @Table(name = "tblCategories", schema = "dbo", catalog = "MiniEcommerce")
-public class Category {
+public class CategoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "catagoryID", nullable = false)
@@ -26,5 +26,5 @@ public class Category {
     private String description;
     @OneToMany(mappedBy = "tblCategoriesByCatagoryId")
     @JsonIgnore
-    private Collection<Product> tblProductsByCatagoryId;
+    private Collection<ProductEntity> tblProductsByCatagoryId;
 }
