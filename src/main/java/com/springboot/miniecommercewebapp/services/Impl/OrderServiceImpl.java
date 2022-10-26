@@ -2,13 +2,12 @@ package com.springboot.miniecommercewebapp.services.Impl;
 
 import com.springboot.miniecommercewebapp.dto.request.CartSelected;
 import com.springboot.miniecommercewebapp.dto.response.SuccessResponse;
-import com.springboot.miniecommercewebapp.models.CartsEntity;
 import com.springboot.miniecommercewebapp.models.OrderItemsEntity;
 import com.springboot.miniecommercewebapp.models.OrdersEntity;
 import com.springboot.miniecommercewebapp.repositories.OrderRepository;
-import com.springboot.miniecommercewebapp.repositories.OrderDetailRepository;
+import com.springboot.miniecommercewebapp.repositories.OrderItemRepository;
 import com.springboot.miniecommercewebapp.services.IOrderService;
-import com.springboot.miniecommercewebapp.services.IOrderDetailService;
+import com.springboot.miniecommercewebapp.services.IOrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +21,9 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     OrderRepository orderRepository;
     @Autowired
-    IOrderDetailService iOrderDetailService;
+    IOrderItemService iOrderDetailService;
     @Autowired
-    OrderDetailRepository orderDetailRepository;
+    OrderItemRepository orderItemRepository;
 
     @Override
     public ResponseEntity<SuccessResponse> getAllOrders(String userId) {
@@ -78,19 +77,20 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     // return quantity to product
     public ResponseEntity<SuccessResponse> cancelOrder(int orderId) {
-        Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId).map(order -> {
-            order.setStatus(1);
-            return orderRepository.save(order);
-        });
-        List<OrderItemsEntity> foundOrderDetail = orderDetailRepository.findByOrderId(orderId);
-        if (foundOrder.isPresent()) {
-            if (foundOrderDetail.size() > 0) {
-                foundOrderDetail.stream().forEach(orderDetail -> {
-                    iOrderDetailService.cancelOrderDetail(orderDetail);
-                });
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("ok", "cancel success", ""));
-        } else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse("failed", "Not found Order", ""));
+//        Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId).map(order -> {
+//            order.setStatus(1);
+//            return orderRepository.save(order);
+//        });
+//        List<OrderItemsEntity> foundOrderDetail = orderDetailRepository.findByOrderId(orderId);
+//        if (foundOrder.isPresent()) {
+//            if (foundOrderDetail.size() > 0) {
+//                foundOrderDetail.stream().forEach(orderDetail -> {
+//                    iOrderDetailService.cancelOrderDetail(orderDetail);
+//                });
+//            }
+//            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("ok", "cancel success", ""));
+//        } else
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse("failed", "Not found Order", ""));
+    return  null;
     }
 }
