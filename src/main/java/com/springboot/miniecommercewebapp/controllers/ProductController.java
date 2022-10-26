@@ -1,5 +1,6 @@
 package com.springboot.miniecommercewebapp.controllers;
 
+import com.springboot.miniecommercewebapp.dto.response.SuccessResponse;
 import com.springboot.miniecommercewebapp.models.ProductsEntity;
 import com.springboot.miniecommercewebapp.repositories.ProductRepository;
 import com.springboot.miniecommercewebapp.services.IProductService;
@@ -31,37 +32,39 @@ public class ProductController {
             , @RequestParam(name = "size", required = true, defaultValue = "10") Integer size
             , @RequestParam(name = "sortTable", required = true, defaultValue = "productId") String sortTable
             , @RequestParam(name = "sort", required = true, defaultValue = "ASC") String sort) {
-        return new ResponseEntity<>(iProductService.getProductsWithPage(page, size, sortTable, sort).getContent(), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse("200", "Found success", iProductService.getProductsWithPage(page, size, sortTable
+                , sort).getContent()), HttpStatus.OK);
     }
 
     // Get products by category id
     @GetMapping("/{categoryId}/category")
     ResponseEntity<?> getProductsByCategoryId(@PathVariable int categoryId) {
-        return new ResponseEntity<>(iProductService.getProductsByCategoryId(categoryId), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse("200", "Found success", iProductService.getProductsByCategoryId(categoryId)),
+                HttpStatus.OK);
     }
 
     // Get detail product by id
     @GetMapping("/{productId}")
     ResponseEntity<?> getProductById(@PathVariable int productId) {
-        return new ResponseEntity<>(iProductService.getProductById(productId), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse("200", "Found success", iProductService.getProductById(productId)), HttpStatus.OK);
     }
 
     // Add product
     @PostMapping()
     ResponseEntity<?> addNewProduct(@Valid @RequestBody ProductsEntity newProduct) {
-        return new ResponseEntity<>(iProductService.addNewProduct(newProduct), HttpStatus.CREATED);
+        return new ResponseEntity<>(new SuccessResponse("200", "Add success", iProductService.addNewProduct(newProduct)),
+                HttpStatus.CREATED);
     }
 
     // Update Product
     @PutMapping("/{productId}")
-    ResponseEntity<?> updateProduct(@PathVariable int productId, @RequestBody ProductsEntity newProduct) {
-        return new ResponseEntity<>(iProductService.updateProduct(productId, newProduct, 0), HttpStatus.OK);
+    ResponseEntity<?> updateProduct(@PathVariable int productId, @Valid @RequestBody ProductsEntity newProduct) {
+        return new ResponseEntity<>(new SuccessResponse("200", "Update success", iProductService.updateProduct(productId, newProduct, 0)),
+                HttpStatus.OK);
     }
-
-    // Delete product by id
-    @DeleteMapping("/{productId}")
-    ResponseEntity<?> deleteProduct(@PathVariable int productId, @RequestParam(name = "status") int newStatus) {
-        return new ResponseEntity<>(iProductService.updateStatusProduct(productId, newStatus), HttpStatus.NO_CONTENT);
+    @DeleteMapping("{productId}")
+    ResponseEntity<?> updateStatus(@PathVariable int productId, @RequestParam(name = "status") int status) {
+        return new ResponseEntity<>(new SuccessResponse("200", "Update success", iProductService.updateStatusProduct(productId, status)),
+                HttpStatus.OK);
     }
-
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,28 +76,26 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ProductsEntity addNewProduct(ProductsEntity newProduct) {
         Optional<ProductsEntity> foundProducts = productRepository.findByProductName(newProduct.getProductName().trim());
-        if (foundProducts.isEmpty()) return productRepository.save(newProduct);
+        if (foundProducts.isEmpty()) {
+            newProduct.setCreateDate((java.sql.Date) new Date());
+            return productRepository.save(newProduct);
+        }
         throw new ItemExistException("Product's name has already taken");
     }
 
     @Override
-    public Optional<ProductsEntity> updateProduct(int productId, ProductsEntity updateProduct, int quantity) {
-        boolean status = (updateProduct.getQuantity() != 0);
-        Optional<ProductsEntity> foundName = productRepository.findByProductName(updateProduct.getProductName());
-        if (foundName.isPresent() && foundName.get().getProductId() != productId)
-            throw new ItemExistException("This name has already taken");
-        Optional<ProductsEntity> foundProduct = productRepository.findById(productId).map(product -> {
-            product.setProductName(updateProduct.getProductName());
-            product.setPrice(updateProduct.getPrice());
-            product.setQuantity(updateProduct.getQuantity() - quantity);
-            product.setCatagoryId(updateProduct.getCatagoryId());
-            product.setStatus(1);
-            product.setDescription(updateProduct.getDescription());
-            product.setCreateDate(updateProduct.getCreateDate());
-            return productRepository.save(product);
-        });
-        if (foundProduct.isPresent())
-            return foundProduct;
+    public ProductsEntity updateProduct(int productId, ProductsEntity updateProduct, int quantity) {
+        Optional<ProductsEntity> foundProduct = productRepository.findById(productId);
+        if (foundProduct.isPresent()) {
+            Optional<ProductsEntity> foundName = productRepository.findByProductName(updateProduct.getProductName());
+//        Check name
+            if (foundName.isPresent() && foundName.get().getProductId() != productId)
+                throw new ItemExistException("This name has already taken");
+            updateProduct.setProductId(productId);
+            int status = (updateProduct.getQuantity() != 0) ? 1 : 0;
+            updateProduct.setStatus(status);
+            return productRepository.save(updateProduct);
+        }
         throw new NotFoundException("Failed! Product not exist to update");
     }
 
@@ -122,8 +121,9 @@ public class ProductServiceImpl implements IProductService {
 //                    product.setStatus(newStatus);
                     return productRepository.save(product);
                 });
-        if (updateProduct.isPresent())
+        if (updateProduct.isPresent()) {
             return true;
+        }
         throw new NotFoundException("Not found product.");
     }
 }

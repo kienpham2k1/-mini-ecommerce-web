@@ -38,12 +38,12 @@ public class RateServiceImpl implements IRateService {
     }
 
     @Override
-    public Optional<RatingsEntity> updateRate(RatingsEntity updateRatting) {
-        Optional<RatingsEntity> foundRatingDetail = ratingRepository.findByProductIdAndUserId(updateRatting.getProductId(), updateRatting.getUserId()).map(rating -> {
-            rating.setScore(updateRatting.getScore());
-            return ratingRepository.save(rating);
-        });
-        if (foundRatingDetail.isPresent()) return foundRatingDetail;
+    public RatingsEntity updateRate(int rateId, RatingsEntity updateRatting) {
+        Optional<RatingsEntity> foundRatingDetail = ratingRepository.findById(rateId);
+        if (foundRatingDetail.isPresent()) {
+            updateRatting.setRatingId(rateId);
+            return ratingRepository.save(updateRatting);
+        }
         throw new NotFoundException("Not fount to update");
     }
 

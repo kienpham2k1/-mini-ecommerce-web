@@ -19,37 +19,37 @@ public class ProductsEntity {
     private int productId;
     @Basic
     @Column(name = "productName", nullable = false, length = 100)
-//    @NotNull(message = "Product name must not null")
-//    @NotBlank(message = "Product name must not blank")
-    //@Length(min = 5, max = 100, message = "Name length is [5, 100]")
+    @NotNull
+    @NotBlank
+    @Length(min = 5, max = 100)
     private String productName;
     @Basic
     @Column(name = "description", nullable = false, length = 500)
-//    @NotNull(message = "Description must not null")
-//    @NotBlank(message = "Description must not blank")
-    //@Length(min = 5, max = 100, message = "Description length is [5, 1000]")
+    @NotNull
+    @NotBlank
+    @Length(min = 5, max = 100)
     private String description;
     @Basic
     @Column(name = "createDate", nullable = false)
-//    @NotNull(message = "Create date must not null")
+    @NotNull
     private Date createDate;
     @Basic
     @Column(name = "price", nullable = false, precision = 0)
-//    @NotNull(message = "Price must not null")
-//    @DecimalMin(value = "0.1", message = "Price must greater than 0")
+    @NotNull
+    @DecimalMin(value = "0.1")
     private double price;
     @Basic
     @Column(name = "quantity", nullable = false)
-//    @NotNull(message = "Quantity must not null")
-    @Min(value = 1, message = "Quantity must greater than 0")
+    @NotNull
+    @Min(value = 0)
     private int quantity;
     @Basic
     @Column(name = "catagoryID", nullable = false)
-    //@NotNull(message = "Catagory ID must not null")
+    @NotNull
     private int catagoryId;
     @Basic
     @Column(name = "status", nullable = false)
-//    @NotNull(message = "Status must not null")
+    @NotNull
     private int status;
     @OneToMany(mappedBy = "tblProductsByProductId")
     @JsonIgnore

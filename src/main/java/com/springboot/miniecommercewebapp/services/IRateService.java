@@ -11,6 +11,6 @@ public interface IRateService {
     List<RatingsEntity> getALlRatingByProductId(int productId);
     Optional<RatingsEntity> getRatingDetail(int productId, String userId);
     RatingsEntity addNewRate(RatingsEntity newRating);
-    Optional<RatingsEntity> updateRate(RatingsEntity updateRatting);
+    RatingsEntity updateRate(int rateId, RatingsEntity updateRatting);
     boolean deleteRating(int ratingId);
 }

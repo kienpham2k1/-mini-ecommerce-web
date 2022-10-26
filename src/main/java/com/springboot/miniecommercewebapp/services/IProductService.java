@@ -19,7 +19,7 @@ IProductService {
     ProductsEntity addNewProduct(ProductsEntity newProduct);
 
     // Update full
-    Optional<ProductsEntity> updateProduct( int id,ProductsEntity newProduct, int quantity);
+    ProductsEntity updateProduct( int id,ProductsEntity newProduct, int quantity);
 
     // Update quantity
     Optional<ProductsEntity> updateProduct(int id, int quantity);

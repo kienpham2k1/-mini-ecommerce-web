@@ -1,11 +1,14 @@
 package com.springboot.miniecommercewebapp.controllers;
 
-import com.springboot.miniecommercewebapp.models.RateEntity;
-import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
-import com.springboot.miniecommercewebapp.services.rateService.IRateService;
+import com.springboot.miniecommercewebapp.dto.response.SuccessResponse;
+import com.springboot.miniecommercewebapp.models.RatingsEntity;
+import com.springboot.miniecommercewebapp.services.IRateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/rate")
@@ -14,27 +17,32 @@ public class RateController {
     IRateService iRatingService;
 
     @GetMapping("{productId}")
-    ResponseEntity<ResponseObject> getAllRateOfProduct(@PathVariable int productId) {
-        return iRatingService.getALlRatingByProductId(productId);
+    ResponseEntity<?> getAllRateOfProduct(@PathVariable int productId) {
+        return new ResponseEntity<>(new SuccessResponse("200", "Found success", iRatingService.getALlRatingByProductId(productId)),
+                HttpStatus.OK);
     }
 
-    @GetMapping("/detail/{productId}")
-    ResponseEntity<ResponseObject> getAllRateOfProduct(@PathVariable int productId, @RequestParam(name = "userId") String userId) {
-        return iRatingService.getRatingDetail(productId, userId);
+    @GetMapping("/{productId}/product")
+    ResponseEntity<?> getAllRateOfProduct(@PathVariable int productId, @RequestParam(name = "userId") String userId) {
+        return new ResponseEntity<>(new SuccessResponse("200", "Found success", iRatingService.getRatingDetail(productId, userId)),
+                HttpStatus.OK);
     }
 
     @PostMapping("")
-    ResponseEntity<ResponseObject> addNewRating(@RequestBody RateEntity rate) {
-        return iRatingService.addNewRate(rate);
+    ResponseEntity<?> addNewRating(@Valid @RequestBody RatingsEntity rate) {
+        return new ResponseEntity<>(new SuccessResponse("200", "Add new success", iRatingService.addNewRate(rate)), HttpStatus.OK);
     }
 
     @PutMapping("")
-    ResponseEntity<ResponseObject> updateRating(@RequestBody RateEntity rate) {
-        return iRatingService.updateRate(rate);
+    ResponseEntity<?> updateRating(@RequestParam(name = "rateId") int rateId, @Valid @RequestBody RatingsEntity rate) {
+        return new ResponseEntity<>(new SuccessResponse("200", "Update success", iRatingService.updateRate(rateId, rate))
+                , HttpStatus.OK);
     }
 
+
     @DeleteMapping("{ratingId}")
-    ResponseEntity<ResponseObject> deleteRating(@PathVariable int ratingId) {
-        return iRatingService.deleteRating(ratingId);
+    ResponseEntity<?> deleteRating(@PathVariable int ratingId) {
+        return new ResponseEntity<>(new SuccessResponse("200", "Delete success", iRatingService.deleteRating(ratingId))
+                , HttpStatus.OK);
     }
 }
