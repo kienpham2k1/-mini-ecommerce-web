@@ -1,18 +1,18 @@
 package com.springboot.miniecommercewebapp.repositories;
 
-import com.springboot.miniecommercewebapp.models.ProductEntity;
+import com.springboot.miniecommercewebapp.models.ProductsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
+public interface ProductRepository extends JpaRepository<ProductsEntity, Integer> {
 
-    List<ProductEntity> findByCatagoryId(int categoryId);
+    List<ProductsEntity> findByCatagoryId(int categoryId);
 
-    List<ProductEntity> findByProductName(String productName);
+    Optional<ProductsEntity> findByProductName(String productName);
 
-    @Query("select p from ProductEntity p where p.productId = ?1 and p.quantity >= ?2")
-    Optional<ProductEntity> findByProductIdAndQuantity(int productId, int quantityCheck);
+    @Query("select p from ProductsEntity p where p.productId = ?1 and p.quantity >= ?2")
+    Optional<ProductsEntity> findByProductIdAndQuantity(int productId, int quantityCheck);
 }

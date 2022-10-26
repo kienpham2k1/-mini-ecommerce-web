@@ -1,7 +1,6 @@
 package com.springboot.miniecommercewebapp.repositories;
 
-
-import com.springboot.miniecommercewebapp.models.CartEntity;
+import com.springboot.miniecommercewebapp.models.CartsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CartRepository extends JpaRepository<CartEntity, Integer> {
-    List<CartEntity> findByUserId(String userId);
-    Optional<CartEntity> findByUserIdAndProductId(String userId, int productId);
+public interface CartRepository extends JpaRepository<CartsEntity, Integer> {
+    List<CartsEntity> findByUserId(String userId);
+    Optional<CartsEntity> findByUserIdAndProductId(String userId, int productId);
 }

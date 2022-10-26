@@ -1,7 +1,7 @@
-package com.springboot.miniecommercewebapp.services;
+package com.springboot.miniecommercewebapp.services.Impl;
 
 import com.springboot.miniecommercewebapp.config.WebSecurityConfig;
-import com.springboot.miniecommercewebapp.repositories.AdminRepository;
+import com.springboot.miniecommercewebapp.enums.ERoleName;
 import com.springboot.miniecommercewebapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,9 +22,10 @@ public class JwtUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
         var foundUser = userRepository.findById(userid);
         if (foundUser.isPresent()){
-            return new User(foundUser.get().getPassword(),
+            String roleName = ERoleName.getRoleName(foundUser.get().getRoleId());
+            return new User(foundUser.get().getUserId(),
                     WebSecurityConfig.passwordEncoder().encode(foundUser.get().getPassword()),
-                    Collections.singleton(new SimpleGrantedAuthority(String.valueOf(foundUser.get().getRoleId())))
+                    Collections.singleton(new SimpleGrantedAuthority(roleName))
             );
         } else {
             throw new UsernameNotFoundException("User not found with userId: " + userid);

@@ -1,8 +1,9 @@
-package com.springboot.miniecommercewebapp.services.userService;
+package com.springboot.miniecommercewebapp.services.Impl;
 
-import com.springboot.miniecommercewebapp.exceptions.ResponseObject;
-import com.springboot.miniecommercewebapp.models.UserEntity;
+import com.springboot.miniecommercewebapp.dto.response.SuccessResponse;
+import com.springboot.miniecommercewebapp.models.UsersEntity;
 import com.springboot.miniecommercewebapp.repositories.UserRepository;
+import com.springboot.miniecommercewebapp.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,19 +15,19 @@ import java.util.Optional;
 public class UserServiceImpl implements IUserService {
     @Autowired
     UserRepository userRepository;
-    public ResponseEntity<ResponseObject> register(UserEntity newUser) {
-        Optional<UserEntity> foundUser = userRepository.findById(newUser.getUserId());
+    public ResponseEntity<SuccessResponse> register(UsersEntity newUser) {
+        Optional<UsersEntity> foundUser = userRepository.findById(newUser.getUserId());
         if (foundUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Insert successfully!", null));
+                    new SuccessResponse("ok", "Insert successfully!", null));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", "Fail, userId already taken!", null));
+                    new SuccessResponse("failed", "Fail, userId already taken!", null));
         }
     }
 
-    public ResponseEntity<ResponseObject> updateUser(UserEntity newUser, String id) {
-        Optional<UserEntity> updateUser = userRepository.findById(id)
+    public ResponseEntity<SuccessResponse> updateUser(UsersEntity newUser, String id) {
+        Optional<UsersEntity> updateUser = userRepository.findById(id)
                 .map(user -> {
                     user.setFullName(newUser.getFullName());
                     user.setPassword(newUser.getPassword());
@@ -34,33 +35,33 @@ public class UserServiceImpl implements IUserService {
                     user.setBirthday(newUser.getBirthday());
                     user.setPhone(newUser.getPhone());
                     user.setEmail(newUser.getEmail());
-                    user.setStatus(newUser.isStatus());
+                    user.setStatus(newUser.getStatus());
                     return userRepository.save(user);
                 });
         if (updateUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Update successfully!", updateUser)
+                    new SuccessResponse("ok", "Update successfully!", updateUser)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "User not found!", updateUser)
+                    new SuccessResponse("failed", "User not found!", updateUser)
             );
         }
     }
 
-    public ResponseEntity<ResponseObject> deleteUser(String userId) {
-        Optional<UserEntity> deleteUser = userRepository.findById(userId)
+    public ResponseEntity<SuccessResponse> deleteUser(String userId) {
+        Optional<UsersEntity> deleteUser = userRepository.findById(userId)
                 .map(user -> {
-                    user.setStatus(false);
+                    user.setStatus(0);
                     return userRepository.save(user);
                 });
         if (deleteUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Delete successfully!", "")
+                    new SuccessResponse("ok", "Delete successfully!", "")
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "User not found!", "")
+                    new SuccessResponse("failed", "User not found!", "")
             );
         }
     }

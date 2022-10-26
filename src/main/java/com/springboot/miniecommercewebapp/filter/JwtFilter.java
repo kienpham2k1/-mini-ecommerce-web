@@ -1,6 +1,6 @@
 package com.springboot.miniecommercewebapp.filter;
 
-import com.springboot.miniecommercewebapp.services.JwtUserDetailsService;
+import com.springboot.miniecommercewebapp.services.Impl.JwtUserDetailsService;
 import com.springboot.miniecommercewebapp.jwtUtils.TokenManager;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
