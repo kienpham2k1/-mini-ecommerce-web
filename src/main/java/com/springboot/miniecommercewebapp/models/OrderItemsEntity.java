@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -23,7 +24,7 @@ public class OrderItemsEntity {
     private int quantity;
     @Basic
     @Column(name = "price", nullable = false, precision = 0)
-    @Min(value = 1)
+    @DecimalMin(value = "0.1")
     private double price;
     @Basic
     @Column(name = "orderID", nullable = true)

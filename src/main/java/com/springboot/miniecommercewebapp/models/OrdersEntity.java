@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 import java.util.Collection;
 
@@ -19,6 +22,8 @@ public class OrdersEntity {
     @Column(name = "orderDate", nullable = false)
     private Date orderDate;
     @Basic
+    @NotNull
+    @Min(value = 0)
     @Column(name = "total", nullable = false, precision = 0)
     private double total;
     @Basic

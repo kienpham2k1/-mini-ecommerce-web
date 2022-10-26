@@ -1,16 +1,15 @@
 package com.springboot.miniecommercewebapp.services.Impl;
 
 import com.springboot.miniecommercewebapp.dto.request.CartSelected;
-import com.springboot.miniecommercewebapp.dto.response.SuccessResponse;
+import com.springboot.miniecommercewebapp.exceptions.NotFoundException;
+import com.springboot.miniecommercewebapp.models.CartsEntity;
 import com.springboot.miniecommercewebapp.models.OrderItemsEntity;
 import com.springboot.miniecommercewebapp.models.OrdersEntity;
-import com.springboot.miniecommercewebapp.repositories.OrderRepository;
 import com.springboot.miniecommercewebapp.repositories.OrderItemRepository;
-import com.springboot.miniecommercewebapp.services.IOrderService;
+import com.springboot.miniecommercewebapp.repositories.OrderRepository;
 import com.springboot.miniecommercewebapp.services.IOrderItemService;
+import com.springboot.miniecommercewebapp.services.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,71 +25,65 @@ public class OrderServiceImpl implements IOrderService {
     OrderItemRepository orderItemRepository;
 
     @Override
-    public ResponseEntity<SuccessResponse> getAllOrders(String userId) {
+    public List<OrdersEntity> getAllOrders(String userId) {
         List<OrdersEntity> orderList = orderRepository.findByUserId(userId);
         if (orderList.size() > 0) {
-            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("ok", "found", orderList));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse("failed", "Not found", ""));
+            return orderList;
         }
+        throw new NotFoundException("Not found orders");
     }
 
     @Override
-    public ResponseEntity<SuccessResponse> getOrder(int orderId) {
+    public Optional<OrdersEntity> getOrder(int orderId) {
         Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId);
         if (foundOrder.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("ok", "found", foundOrder));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse("failed", "Not found", ""));
+            return foundOrder;
         }
+        throw new NotFoundException("Not found order");
     }
 
     @Override
-    public ResponseEntity<SuccessResponse> addOrder(CartSelected newOrder) {
-//        if (newOrder.getCartList().size() > 0) {
-//            double total = 0;
-//            for (CartsEntity cartItem : newOrder.getCartList()) {
-//                total += cartItem.getPrice();
-//            }
-//            OrdersEntity insertOrder = orderRepository.save(newOrder.getNewOrder());
-//            newOrder.getCartList().stream().forEach(cart -> {
-//                iOrderDetailService.addOrderItem(insertOrder.getOrderId(), cart);
-//            });
-//            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("ok", "found", insertOrder));
-//        } else return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
-//                new SuccessResponse("Failed", "list Cart null", ""));
-    return null;
+    public OrdersEntity addOrder(CartSelected newOrder) {
+        if (newOrder.getCartList().size() > 0) {
+            double total = 0;
+            for (CartsEntity cartItem : newOrder.getCartList()) {
+                total += cartItem.getPrice();
+            }
+            OrdersEntity insertOrder = orderRepository.save(newOrder.getNewOrder());
+            newOrder.getCartList().stream().forEach(cart -> {
+                iOrderDetailService.addOrderItem(insertOrder.getOrderId(), cart);
+            });
+            return insertOrder;
+        }
+        throw new NotFoundException("Cart select null");
     }
 
     @Override
-    public ResponseEntity<SuccessResponse> updateOrder(int orderId, int updateStatus) {
-        Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId).map(order -> {
-            order.setStatus(1);
-            return orderRepository.save(order);
-        });
-        if (foundOrder.isPresent())
-            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("ok", "Update success", ""));
-        else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse("failed", "Not found Order", ""));
+    public OrdersEntity updateOrder(int orderId, int updateStatus) {
+        Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId);
+        if (foundOrder.isPresent()) {
+            foundOrder.get().setStatus(updateStatus);
+            return orderRepository.save(foundOrder.get());
+        }
+        throw new NotFoundException("Not found Order");
     }
 
     @Override
     // return quantity to product
-    public ResponseEntity<SuccessResponse> cancelOrder(int orderId) {
-//        Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId).map(order -> {
-//            order.setStatus(1);
-//            return orderRepository.save(order);
-//        });
-//        List<OrderItemsEntity> foundOrderDetail = orderDetailRepository.findByOrderId(orderId);
-//        if (foundOrder.isPresent()) {
-//            if (foundOrderDetail.size() > 0) {
-//                foundOrderDetail.stream().forEach(orderDetail -> {
-//                    iOrderDetailService.cancelOrderDetail(orderDetail);
-//                });
-//            }
-//            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("ok", "cancel success", ""));
-//        } else
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse("failed", "Not found Order", ""));
-    return  null;
+    public boolean cancelOrder(int orderId) {
+        Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId).map(order -> {
+            order.setStatus(1);
+            return orderRepository.save(order);
+        });
+        List<OrderItemsEntity> foundOrderItems = orderItemRepository.findByOrderId(orderId);
+        if (foundOrder.isPresent()) {
+            if (foundOrderItems.size() > 0) {
+                foundOrderItems.stream().forEach(orderDetail -> {
+                    iOrderDetailService.cancelOrderDetail(orderDetail.getDetailId());
+                });
+            }
+            return true;
+        }
+        throw new NotFoundException("Not found");
     }
 }

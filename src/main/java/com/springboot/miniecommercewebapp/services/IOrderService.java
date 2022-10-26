@@ -2,12 +2,17 @@ package com.springboot.miniecommercewebapp.services;
 
 import com.springboot.miniecommercewebapp.dto.request.CartSelected;
 import com.springboot.miniecommercewebapp.dto.response.SuccessResponse;
+import com.springboot.miniecommercewebapp.models.OrderItemsEntity;
+import com.springboot.miniecommercewebapp.models.OrdersEntity;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface IOrderService {
-    ResponseEntity<SuccessResponse> getAllOrders(String userId);
-    ResponseEntity<SuccessResponse> getOrder(int orderId);
-    ResponseEntity<SuccessResponse> addOrder(CartSelected newCartSelected);
-    ResponseEntity<SuccessResponse> updateOrder(int orderID, int status);
-    ResponseEntity<SuccessResponse> cancelOrder(int orderId);
+    List<OrdersEntity> getAllOrders(String userId);
+    Optional<OrdersEntity> getOrder(int orderId);
+    OrdersEntity addOrder(CartSelected newCartSelected);
+    OrdersEntity updateOrder(int orderID, int status);
+    boolean cancelOrder(int orderId);
 }

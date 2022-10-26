@@ -22,7 +22,7 @@ public class RateController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/{productId}/product")
+    @GetMapping("/{productId}/user")
     ResponseEntity<?> getAllRateOfProduct(@PathVariable int productId, @RequestParam(name = "userId") String userId) {
         return new ResponseEntity<>(new SuccessResponse("200", "Found success", iRatingService.getRatingDetail(productId, userId)),
                 HttpStatus.OK);
