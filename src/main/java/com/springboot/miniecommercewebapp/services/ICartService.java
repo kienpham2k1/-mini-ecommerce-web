@@ -4,9 +4,11 @@ import com.springboot.miniecommercewebapp.dto.response.SuccessResponse;
 import com.springboot.miniecommercewebapp.models.CartsEntity;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface ICartService {
-    ResponseEntity<SuccessResponse> addToCart(CartsEntity newCart);
-    ResponseEntity<SuccessResponse> getCartItemsByUserId(String userId);
-    ResponseEntity<SuccessResponse> updateCartItem(int cartId, CartsEntity updateCart, int plus);
-    ResponseEntity<SuccessResponse> deleteCartItem(int cartId);
+    List<CartsEntity> getCartItemsByUserId(String userId);
+    CartsEntity addToCart(CartsEntity newCart);
+    CartsEntity updateCartItem(int cartId, CartsEntity updateCart, int plus);
+    boolean deleteCartItem(int cartId);
 }

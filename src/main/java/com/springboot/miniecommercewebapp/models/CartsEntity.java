@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -15,15 +17,19 @@ public class CartsEntity {
     private int cartId;
     @Basic
     @Column(name = "userID", nullable = false, length = 20)
+    @NotNull
     private String userId;
     @Basic
     @Column(name = "productID", nullable = false)
+    @NotNull
     private int productId;
     @Basic
     @Column(name = "quantity", nullable = false)
+    @Min(1)
     private int quantity;
     @Basic
     @Column(name = "price", nullable = false, precision = 0)
+    @Min(0)
     private double price;
     @ManyToOne
     @JsonIgnore
