@@ -1,9 +1,7 @@
 package com.springboot.miniecommercewebapp.exceptions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.springboot.miniecommercewebapp.dto.response.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +9,17 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
 @ControllerAdvice
+@Slf4j
+@ResponseBody
 public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({NotFoundException.class})
@@ -30,16 +36,8 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<ErrorResponse>(error, HttpStatus.FOUND);
     }
 
-
-    @ExceptionHandler({IllegalArgumentException.class})
-    protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(RuntimeException exception,
-                                                                           WebRequest request) {
-        ErrorResponse error = new ErrorResponse("400", exception.getMessage());
-        return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler({SqlException.class})
-    protected ResponseEntity<ErrorResponse> handleSqlException(RuntimeException exception,
+    @ExceptionHandler({SQLException.class})
+    protected ResponseEntity<ErrorResponse> handleSqlException(SQLException exception,
                                                                WebRequest request) {
         ErrorResponse error = new ErrorResponse("409", exception.getMessage());
         return new ResponseEntity<ErrorResponse>(error, HttpStatus.CONFLICT);
