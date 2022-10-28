@@ -13,6 +13,6 @@ public interface IOrderService {
     List<OrdersEntity> getAllOrders(String userId);
     Optional<OrdersEntity> getOrder(int orderId);
     OrdersEntity addOrder(CartSelected newCartSelected);
-    OrdersEntity updateOrder(int orderID, int status);
+    OrdersEntity updateOrder(int orderID, String status);
     boolean cancelOrder(int orderId);
 }

@@ -10,16 +10,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ErrorResponse {
-    String code;
+    int code;
     String message;
     @JsonInclude(value = Include.NON_NULL)
     Map<String, String> validationErrors;
-    public ErrorResponse(String code, String message) {
+    public ErrorResponse(int code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    public ErrorResponse(String code, String message, Map<String, String> validationErrors) {
+    public ErrorResponse(int code, String message, Map<String, String> validationErrors) {
         super();
         this.code = code;
         this.message = message;

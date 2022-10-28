@@ -1,9 +1,12 @@
 package com.springboot.miniecommercewebapp.services.Impl;
 
 import com.springboot.miniecommercewebapp.config.WebSecurityConfig;
-import com.springboot.miniecommercewebapp.enums.ERoleName;
+import com.springboot.miniecommercewebapp.models.AdminsEntity;
+import com.springboot.miniecommercewebapp.models.UsersEntity;
+import com.springboot.miniecommercewebapp.repositories.AdminRepository;
 import com.springboot.miniecommercewebapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,24 +14,36 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    AdminRepository adminRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
-        var foundUser = userRepository.findById(userid);
-        if (foundUser.isPresent()){
-            String roleName = ERoleName.getRoleName(foundUser.get().getRoleId());
-            return new User(foundUser.get().getUserId(),
-                    WebSecurityConfig.passwordEncoder().encode(foundUser.get().getPassword()),
-                    Collections.singleton(new SimpleGrantedAuthority(roleName))
-            );
-        } else {
-            throw new UsernameNotFoundException("User not found with userId: " + userid);
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        Optional<UsersEntity> foundUser = userRepository.findById(userId);
+        Optional<AdminsEntity> foundAdmin = adminRepository.findById(userId);
+
+        List<GrantedAuthority> authories = new ArrayList<>();
+
+        if (foundAdmin.isPresent()) {
+            GrantedAuthority authority = new SimpleGrantedAuthority(foundAdmin.get().getTblRolesByRoleId().getRoleName());
+            authories.add(authority);
+            return new User(foundAdmin.get().getUserId(), WebSecurityConfig.passwordEncoder().encode(foundAdmin.get().getPassword()), authories);
+        }else {
+            if (foundUser.isPresent()) {
+                GrantedAuthority authority = new SimpleGrantedAuthority(foundUser.get().getTblRolesByRoleId().getRoleName());
+                authories.add(authority);
+                return new User(foundUser.get().getUserId(), WebSecurityConfig.passwordEncoder().encode(foundUser.get().getPassword()), authories);
+            } else throw new UsernameNotFoundException("User is not exist!");
         }
     }
 }

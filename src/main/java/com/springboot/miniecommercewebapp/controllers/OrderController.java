@@ -16,26 +16,26 @@ public class OrderController {
 
     @GetMapping("")
     ResponseEntity<?> getOrders(@RequestParam(name = "userId") String userId) {
-        return new ResponseEntity<>(new SuccessResponse("200", "Found Success", iOrderService.getAllOrders(userId)), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse(200, "Found Success", iOrderService.getAllOrders(userId)), HttpStatus.OK);
     }
 
     @GetMapping("{orderId}")
     ResponseEntity<?> getOrders(@PathVariable int orderId) {
-        return new ResponseEntity<>(new SuccessResponse("200", "Found Success", iOrderService.getOrder(orderId)), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse(200, "Found Success", iOrderService.getOrder(orderId)), HttpStatus.OK);
     }
 
     @PostMapping()
     ResponseEntity<?> addOrder(@RequestBody CartSelected newCartSelected) {
-        return new ResponseEntity<>(new SuccessResponse("200", "Found Success", iOrderService.addOrder(newCartSelected)), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse(201, "Found Success", iOrderService.addOrder(newCartSelected)), HttpStatus.CREATED);
     }
 
     @PutMapping("{orderId}")
-    ResponseEntity<?> updateOrder(@PathVariable int orderId, @RequestParam(name = "status") int status) {
-        return new ResponseEntity<>(new SuccessResponse("200", "Found Success", iOrderService.updateOrder(orderId, status)), HttpStatus.OK);
+    ResponseEntity<?> updateOrder(@PathVariable int orderId, @RequestParam(name = "status") String status) {
+        return new ResponseEntity<>(new SuccessResponse(200, "Found Success", iOrderService.updateOrder(orderId, status)), HttpStatus.OK);
     }
 
     @DeleteMapping("{orderId}")
     ResponseEntity<?> candelOrder(@PathVariable int orderId) {
-        return new ResponseEntity<>(new SuccessResponse("200", "Found Success", iOrderService.cancelOrder(orderId)), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse(200, "Found Success", iOrderService.cancelOrder(orderId)), HttpStatus.OK);
     }
 }

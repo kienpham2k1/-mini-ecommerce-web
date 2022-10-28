@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SuccessResponse {
-    private String code;
+    private int code;
     private String message;
     private Object data;
 }

@@ -93,7 +93,7 @@ public class ProductServiceImpl implements IProductService {
                 throw new ItemExistException("This name has already taken");
             updateProduct.setProductId(productId);
             int status = (updateProduct.getQuantity() != 0) ? 1 : 0;
-            updateProduct.setStatus(status);
+            //updateProduct.setStatus(status);
             return productRepository.save(updateProduct);
         }
         throw new NotFoundException("Failed! Product not exist to update");
@@ -106,7 +106,7 @@ public class ProductServiceImpl implements IProductService {
             boolean newStatus = (availableProduct.get().getQuantity() - quantity) != 0;
             availableProduct.map(product -> {
                 product.setQuantity(availableProduct.get().getQuantity() - quantity);
-                product.setStatus(1);
+                //product.setStatus(1);
                 return productRepository.save(product);
             });
         }
@@ -117,7 +117,7 @@ public class ProductServiceImpl implements IProductService {
     public boolean updateStatusProduct(int id, int newStatus) {
         Optional<ProductsEntity> updateProduct = productRepository.findById(id)
                 .map(product -> {
-                    product.setStatus(1);
+                    //product.setStatus(1);
 //                    product.setStatus(newStatus);
                     return productRepository.save(product);
                 });

@@ -16,7 +16,7 @@ public class OrderItemController {
 
     @GetMapping("{orderId}")
     ResponseEntity<?> getAllOrderItemsByOrderId(@PathVariable int orderId) {
-        return new ResponseEntity<>(new SuccessResponse("200", "Found success",
+        return new ResponseEntity<>(new SuccessResponse(200, "Found success",
                 iOrderDetailService.getOrderItemsByOrderId(orderId)
         ), HttpStatus.CREATED);
     }
@@ -24,13 +24,13 @@ public class OrderItemController {
     @PostMapping("{orderId}")
     ResponseEntity<?> addNewOrderDetail(@PathVariable int orderId, @RequestBody CartsEntity cartItem) {
        // return iOrderDetailService.addOrderItem(orderId, cartItem);
-        return  new ResponseEntity<>(new SuccessResponse("200", "Add success", iOrderDetailService.addOrderItem(orderId, cartItem)),
+        return  new ResponseEntity<>(new SuccessResponse(200, "Add success", iOrderDetailService.addOrderItem(orderId, cartItem)),
                 HttpStatus.OK);
     }
 
     @PutMapping("")
     ResponseEntity<?> cancelOrderDetail(@RequestParam(name = "candelOderItemId") int candelOderItemId) {
-        return new ResponseEntity<>(new SuccessResponse("200", "Cancel success", iOrderDetailService.cancelOrderDetail(candelOderItemId)),
+        return new ResponseEntity<>(new SuccessResponse(200, "Cancel success", iOrderDetailService.cancelOrderDetail(candelOderItemId)),
                 HttpStatus.OK);
     }
 }

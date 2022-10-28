@@ -18,13 +18,13 @@ public class CartController {
 
     @GetMapping("")
     ResponseEntity<?> getAllCartItem(@RequestParam(name = "userId") String userId) {
-        return new ResponseEntity<>(new SuccessResponse("200", "Found success ", iCartService.getCartItemsByUserId(userId)), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponse(200, "Found success ", iCartService.getCartItemsByUserId(userId)), HttpStatus.OK);
         }
 
     @PostMapping("")
     ResponseEntity<?> addNewCart(@RequestBody @Valid CartsEntity newCart) {
         return
-                new ResponseEntity<>(new SuccessResponse("200", "Add success "
+                new ResponseEntity<>(new SuccessResponse(200, "Add success "
                 , iCartService.addToCart(newCart)
         ), HttpStatus.OK);
     }
@@ -32,7 +32,7 @@ public class CartController {
     @PutMapping("{cartId}")
     ResponseEntity<?> updateCart(@PathVariable int cartId, @RequestBody @Valid CartsEntity updateCart) {
         return
-        new ResponseEntity<>(new SuccessResponse("200", "Add success "
+        new ResponseEntity<>(new SuccessResponse(200, "Add success "
                 , iCartService.updateCartItem(cartId, updateCart, 0)
         ), HttpStatus.OK);
     }
@@ -40,7 +40,7 @@ public class CartController {
     @DeleteMapping("/{cartId}")
     ResponseEntity<?> deleteCartItem(@PathVariable int cartId) {
         return
-        new ResponseEntity<>(new SuccessResponse("200", "Add success "
+        new ResponseEntity<>(new SuccessResponse(200, "Add success "
                 , iCartService.deleteCartItem(cartId)
         ), HttpStatus.OK);
     }

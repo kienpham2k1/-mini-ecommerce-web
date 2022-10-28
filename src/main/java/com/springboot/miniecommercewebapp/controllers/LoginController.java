@@ -1,15 +1,15 @@
 package com.springboot.miniecommercewebapp.controllers;
 
 import com.springboot.miniecommercewebapp.dto.request.UserLoginRequestModel;
+import com.springboot.miniecommercewebapp.dto.response.SuccessResponse;
 import com.springboot.miniecommercewebapp.dto.response.UserLoginResponseModel;
-import com.springboot.miniecommercewebapp.services.JwtUserDetailsService;
 import com.springboot.miniecommercewebapp.jwtUtils.TokenManager;
 import com.springboot.miniecommercewebapp.repositories.UserRepository;
+import com.springboot.miniecommercewebapp.services.Impl.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,27 +29,16 @@ public class LoginController {
     UserRepository userRepository;
 
     @PostMapping("/login")
-    public ResponseEntity createToken(@RequestBody UserLoginRequestModel request) throws Exception {
-        try {
-            Authentication authentication =  authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getUsername()
-                            , request.getPassword()
-                    )
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
-        }
+    public ResponseEntity<?> createToken(@RequestBody UserLoginRequestModel request) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         final String jwtToken = tokenManager.generateJwtToken(userDetails);
-        return ResponseEntity.ok(new UserLoginResponseModel(jwtToken));
+        return new ResponseEntity<>(new SuccessResponse(200, "Login success", new UserLoginResponseModel(userDetails.getUsername(), userDetails.getAuthorities().toString(), jwtToken)), HttpStatus.OK);
     }
-    @GetMapping("/login/context")
-    String getContext () {
 
-        return  "Hello World";
+    @GetMapping("/login/context")
+    String getContext() {
+        return "Hello World";
     }
 }
