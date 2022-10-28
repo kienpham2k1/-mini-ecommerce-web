@@ -1,6 +1,7 @@
 package com.springboot.miniecommercewebapp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.springboot.miniecommercewebapp.models.enums.ERoleName;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,7 +18,8 @@ public class RolesEntity {
     private int roleId;
     @Basic
     @Column(name = "roleName", nullable = false, length = 20)
-    private String roleName;
+    @Enumerated(EnumType.STRING)
+    private ERoleName roleName;
     @OneToMany(mappedBy = "tblRolesByRoleId")
     @JsonIgnore
     private Collection<AdminsEntity> tblAdminsByRoleId;

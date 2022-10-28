@@ -1,6 +1,7 @@
 package com.springboot.miniecommercewebapp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.springboot.miniecommercewebapp.models.enums.EOrderStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -31,7 +32,8 @@ public class OrdersEntity {
     private String userId;
     @Basic
     @Column(name = "status", nullable = false)
-    private int status;
+    @Enumerated(EnumType.STRING)
+    private EOrderStatus status;
     @OneToMany(mappedBy = "tblOrdersByOrderId")
     @JsonIgnore
     private Collection<OrderItemsEntity> tblOrderItemsByOrderId;
