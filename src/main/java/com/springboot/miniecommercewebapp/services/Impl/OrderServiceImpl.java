@@ -59,10 +59,10 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public OrdersEntity updateOrder(int orderId, int updateStatus) {
+    public OrdersEntity updateOrder(int orderId, String updateStatus) {
         Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId);
         if (foundOrder.isPresent()) {
-            foundOrder.get().setStatus(updateStatus);
+            //foundOrder.get().setStatus(updateStatus);
             return orderRepository.save(foundOrder.get());
         }
         throw new NotFoundException("Not found Order");
@@ -72,7 +72,7 @@ public class OrderServiceImpl implements IOrderService {
     // return quantity to product
     public boolean cancelOrder(int orderId) {
         Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId).map(order -> {
-            order.setStatus(1);
+            //order.setStatus("asdasd");
             return orderRepository.save(order);
         });
         List<OrderItemsEntity> foundOrderItems = orderItemRepository.findByOrderId(orderId);

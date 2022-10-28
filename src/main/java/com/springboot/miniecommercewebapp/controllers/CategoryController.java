@@ -19,26 +19,26 @@ public class CategoryController {
     @GetMapping()
     ResponseEntity<?> getAllCategories() {
         return new ResponseEntity<>(
-                new SuccessResponse("200", "Found success", iCategoryService.getAllCategories()), HttpStatus.OK);
+                new SuccessResponse(200, "Found success", iCategoryService.getAllCategories()), HttpStatus.OK);
     }
 
     @GetMapping("{categoryId}")
     ResponseEntity<?> getCategoryById(@PathVariable int categoryId) {
         return new ResponseEntity<>(
-                new SuccessResponse("200", "Found success", iCategoryService.getCategoyById(categoryId)), HttpStatus.OK);
+                new SuccessResponse(200, "Found success", iCategoryService.getCategoyById(categoryId)), HttpStatus.OK);
     }
 
     @PostMapping()
     ResponseEntity<?> addNewCategory(@Valid @RequestBody CategoriesEntity newCategory) {
         return new ResponseEntity<>(
-                new SuccessResponse("200", "Add success", iCategoryService.addCategory(newCategory)), HttpStatus.CREATED);
+                new SuccessResponse(201, "Add success", iCategoryService.addCategory(newCategory)), HttpStatus.CREATED);
     }
 
     @PutMapping("{categoryId}")
     ResponseEntity<?> updateCategory(@Valid @RequestBody CategoriesEntity updateCategory, @PathVariable int categoryId) {
 
         return new ResponseEntity<>(
-                new SuccessResponse("200", "Update successs", iCategoryService.updateCategory(updateCategory, categoryId)), HttpStatus.OK);
+                new SuccessResponse(200, "Update successs", iCategoryService.updateCategory(updateCategory, categoryId)), HttpStatus.OK);
 
     }
 

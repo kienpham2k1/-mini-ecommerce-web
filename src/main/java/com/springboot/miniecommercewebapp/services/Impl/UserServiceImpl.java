@@ -15,14 +15,20 @@ import java.util.Optional;
 public class UserServiceImpl implements IUserService {
     @Autowired
     UserRepository userRepository;
+
+    @Override
+    public Optional<UsersEntity> getUser(String userId, String password) {
+        return userRepository.findUserByUserIdAndPassword(userId, password);
+    }
+
     public ResponseEntity<SuccessResponse> register(UsersEntity newUser) {
         Optional<UsersEntity> foundUser = userRepository.findById(newUser.getUserId());
         if (foundUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new SuccessResponse("ok", "Insert successfully!", null));
+                    new SuccessResponse(200, "Insert successfully!", null));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new SuccessResponse("failed", "Fail, userId already taken!", null));
+                    new SuccessResponse(400, "Fail, userId already taken!", null));
         }
     }
 
@@ -40,11 +46,11 @@ public class UserServiceImpl implements IUserService {
                 });
         if (updateUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new SuccessResponse("ok", "Update successfully!", updateUser)
+                    new SuccessResponse(200, "Update successfully!", updateUser)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new SuccessResponse("failed", "User not found!", updateUser)
+                    new SuccessResponse(400, "User not found!", updateUser)
             );
         }
     }
@@ -52,16 +58,16 @@ public class UserServiceImpl implements IUserService {
     public ResponseEntity<SuccessResponse> deleteUser(String userId) {
         Optional<UsersEntity> deleteUser = userRepository.findById(userId)
                 .map(user -> {
-                    user.setStatus(0);
+                    //user.setStatus(0);
                     return userRepository.save(user);
                 });
         if (deleteUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new SuccessResponse("ok", "Delete successfully!", "")
+                    new SuccessResponse(200, "Delete successfully!", "")
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new SuccessResponse("failed", "User not found!", "")
+                    new SuccessResponse(400, "User not found!", "")
             );
         }
     }

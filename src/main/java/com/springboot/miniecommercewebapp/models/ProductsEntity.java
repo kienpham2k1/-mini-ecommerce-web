@@ -1,6 +1,8 @@
 package com.springboot.miniecommercewebapp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.springboot.miniecommercewebapp.models.enums.EProductStatus;
+import com.springboot.miniecommercewebapp.models.enums.EUserStatus;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -50,7 +52,8 @@ public class ProductsEntity {
     @Basic
     @Column(name = "status", nullable = false)
     @NotNull
-    private int status;
+    //@Enumerated(EnumType.STRING)
+    private String status;
     @OneToMany(mappedBy = "tblProductsByProductId")
     @JsonIgnore
     private Collection<CartsEntity> tblCartsByProductId;

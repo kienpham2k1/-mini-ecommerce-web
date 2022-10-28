@@ -1,8 +1,9 @@
 package com.springboot.miniecommercewebapp.filter;
 
-import com.springboot.miniecommercewebapp.services.Impl.JwtUserDetailsService;
 import com.springboot.miniecommercewebapp.jwtUtils.TokenManager;
-import io.jsonwebtoken.ExpiredJwtException;
+import com.springboot.miniecommercewebapp.services.Impl.JwtUserDetailsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,39 +24,32 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtUserDetailsService userDetailsService;
     @Autowired
     private TokenManager tokenManager;
-
+    private Logger log = LoggerFactory.getLogger(JwtFilter.class);
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)
             throws ServletException, IOException {
+        try {
+            String jwt = parseJwt(httpServletRequest);
+            if (jwt != null && tokenManager.validateJwtToken(jwt)) {
+                String userId = tokenManager.getUsernameFromToken(jwt);
+                // Get info User
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            log.error("Cannot set user authentication: {}", e.getMessage());
+        }
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
+    }
 
+    private String parseJwt(HttpServletRequest request) {
         String tokenHeader = request.getHeader("Authorization");
-        String username = null;
-        String token = null;
         if (tokenHeader != null && tokenHeader.startsWith("Bearer ")) {
-            token = tokenHeader.substring(7);
-            try {
-                username = tokenManager.getUsernameFromToken(token);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
-            } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
-            }
-        } else {
-            System.out.println("Bearer String not found in token");
+            return tokenHeader.substring(7);
         }
-        if (null != username && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (tokenManager.validateJwtToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken
-                        (
-                                userDetails, null
-                                , userDetails.getAuthorities()
-                        );
-                authenticationToken.setDetails(new
-                        WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            }
-        }
-        filterChain.doFilter(request, response);
+        return null;
     }
 }

@@ -23,36 +23,38 @@ import java.util.Map;
 public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({NotFoundException.class})
-    protected ResponseEntity<ErrorResponse> handleNotFoundException(RuntimeException exception,
-                                                                    WebRequest request) {
-        ErrorResponse error = new ErrorResponse("404", exception.getMessage());
+    protected ResponseEntity<ErrorResponse> handleNotFoundException(RuntimeException exception, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(404, exception.getMessage());
         return new ResponseEntity<ErrorResponse>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({ItemExistException.class})
-    protected ResponseEntity<ErrorResponse> handleItemExistExceptionException(RuntimeException exception,
-                                                                              WebRequest request) {
-        ErrorResponse error = new ErrorResponse("302", exception.getMessage());
+    protected ResponseEntity<ErrorResponse> handleItemExistExceptionException(RuntimeException exception, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(302, exception.getMessage());
         return new ResponseEntity<ErrorResponse>(error, HttpStatus.FOUND);
     }
-
+    @ExceptionHandler({IllegalArgumentException.class})
+    protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception,
+                                                                           WebRequest request) {
+        ErrorResponse error = new ErrorResponse(400, exception.getMessage());
+        return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler({SQLException.class})
-    protected ResponseEntity<ErrorResponse> handleSqlException(SQLException exception,
-                                                               WebRequest request) {
-        ErrorResponse error = new ErrorResponse("409", exception.getMessage());
+    protected ResponseEntity<ErrorResponse> handleSqlException(SQLException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(409, ex.getMessage());
         return new ResponseEntity<ErrorResponse>(error, HttpStatus.CONFLICT);
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        ErrorResponse error = new ErrorResponse("400", "Validation Error", errors);
+        ErrorResponse error = new ErrorResponse(400, "Validation Error", errors);
         return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
     }
+
 }
