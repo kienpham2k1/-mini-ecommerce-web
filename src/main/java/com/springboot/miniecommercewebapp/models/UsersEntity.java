@@ -25,12 +25,12 @@ public class UsersEntity {
     @Column(name = "fullName", nullable = false, length = 25)
     private String fullName;
     @Basic
+    @JsonIgnore
     @Column(name = "password", nullable = false, length = 25)
     private String password;
-//    @Basic
-//    @Column(name = "roleID", nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private int roleId;
+    @Basic
+    @Column(name = "roleID", nullable = false)
+    private int roleId;
     @Basic
     @Column(name = "address", nullable = false, length = 250)
     private String address;

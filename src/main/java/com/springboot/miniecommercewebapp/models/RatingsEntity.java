@@ -27,8 +27,7 @@ public class RatingsEntity {
     @Min(value = 0)
     @Max(value = 5)
     private int score;
-    @ManyToOne
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productID", referencedColumnName = "productID", nullable = false, insertable = false, updatable = false)
     private ProductsEntity tblProductsByProductId;
     @ManyToOne

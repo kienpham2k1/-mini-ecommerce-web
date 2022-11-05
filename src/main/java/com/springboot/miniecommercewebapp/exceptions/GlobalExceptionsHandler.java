@@ -41,7 +41,7 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler({SQLException.class})
     protected ResponseEntity<ErrorResponse> handleSqlException(SQLException ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(409, ex.getMessage());
+        ErrorResponse error = new ErrorResponse(409, "The INSERT statement conflicted with the FOREIGN KEY constraint");
         return new ResponseEntity<ErrorResponse>(error, HttpStatus.CONFLICT);
     }
 

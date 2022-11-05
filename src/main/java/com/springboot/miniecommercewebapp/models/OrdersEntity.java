@@ -34,8 +34,7 @@ public class OrdersEntity {
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private EOrderStatus status;
-    @OneToMany(mappedBy = "tblOrdersByOrderId")
-    @JsonIgnore
+    @OneToMany(fetch =FetchType.EAGER ,mappedBy = "tblOrdersByOrderId")
     private Collection<OrderItemsEntity> tblOrderItemsByOrderId;
     @ManyToOne
     @JsonIgnore

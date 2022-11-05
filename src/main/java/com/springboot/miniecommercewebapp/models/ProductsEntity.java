@@ -2,12 +2,14 @@ package com.springboot.miniecommercewebapp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springboot.miniecommercewebapp.models.enums.EProductStatus;
-import com.springboot.miniecommercewebapp.models.enums.EUserStatus;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 import java.util.Collection;
 
@@ -29,11 +31,10 @@ public class ProductsEntity {
     @Column(name = "description", nullable = false, length = 500)
     @NotNull
     @NotBlank
-    @Length(min = 5, max = 100)
+    @Length(min = 5, max = 500)
     private String description;
     @Basic
     @Column(name = "createDate", nullable = false)
-    @NotNull
     private Date createDate;
     @Basic
     @Column(name = "price", nullable = false, precision = 0)
@@ -51,9 +52,15 @@ public class ProductsEntity {
     private int catagoryId;
     @Basic
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EProductStatus status;
+    @Basic
+    @Column(name = "imgMain", nullable = false)
     @NotNull
-    //@Enumerated(EnumType.STRING)
-    private String status;
+    @NotBlank
+    private String imgMain;
+
+
     @OneToMany(mappedBy = "tblProductsByProductId")
     @JsonIgnore
     private Collection<CartsEntity> tblCartsByProductId;
@@ -66,9 +73,22 @@ public class ProductsEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "catagoryID", referencedColumnName = "catagoryID", nullable = false
             , insertable = false, updatable = false)
-    @JsonIgnore
+//    @JsonIgnore
     private CategoriesEntity tblCategoriesByCatagoryId;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "tblProductsByProductId")
     @JsonIgnore
     private Collection<RatingsEntity> tblRatingsByProductId;
+    @Transient
+    private Integer score;
+
+    public Integer getScore() {
+        Integer totalScore = 0;
+        if (tblRatingsByProductId.size() > 0) {
+            for (RatingsEntity i : tblRatingsByProductId) {
+                totalScore += i.getScore();
+            }
+        return totalScore/tblRatingsByProductId.size();
+        }
+        return null;
+    }
 }

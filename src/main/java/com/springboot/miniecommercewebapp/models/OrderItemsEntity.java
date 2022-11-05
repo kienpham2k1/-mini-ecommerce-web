@@ -38,8 +38,7 @@ public class OrderItemsEntity {
     @JsonIgnore
     @JoinColumn(name = "orderID", referencedColumnName = "orderID", insertable = false, updatable = false)
     private OrdersEntity tblOrdersByOrderId;
-    @ManyToOne
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productID", referencedColumnName = "productID", nullable = false, insertable = false, updatable = false)
     private ProductsEntity tblProductsByProductId;
 

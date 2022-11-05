@@ -35,8 +35,7 @@ public class CartsEntity {
     @JsonIgnore
     @JoinColumn(name = "userID", referencedColumnName = "userID", nullable = false, insertable = false, updatable = false)
     private UsersEntity tblUsersByUserId;
-    @ManyToOne
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productID", referencedColumnName = "productID", nullable = false, insertable = false, updatable = false)
     private ProductsEntity tblProductsByProductId;
 }
