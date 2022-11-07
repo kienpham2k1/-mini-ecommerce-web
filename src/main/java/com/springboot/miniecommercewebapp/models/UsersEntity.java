@@ -17,7 +17,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @Table(name = "tblUsers", schema = "dbo", catalog = "MiniEcommerce")
 public class UsersEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "userID", nullable = false, length = 20)
     private String userId;
@@ -26,7 +25,7 @@ public class UsersEntity {
     private String fullName;
     @Basic
     @JsonIgnore
-    @Column(name = "password", nullable = false, length = 25)
+    @Column(name = "password", nullable = false, length = 150)
     private String password;
     @Basic
     @Column(name = "roleID", nullable = false)

@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "products")
@@ -29,15 +29,21 @@ public class ProductController {
 //    }
 
     @GetMapping()
-    ResponseEntity<?> getAllProducts(@RequestParam(name = "page", required = false, defaultValue = "0") Integer page
-            , @RequestParam(name = "size", required = true, defaultValue = "10") Integer size
+    ResponseEntity<?> getAllProducts(
+              @RequestParam(name = "page", required = false, defaultValue = "0") Integer page
+            , @RequestParam(name = "size", required = true, defaultValue = "6") Integer size
             , @RequestParam(name = "sortTable", required = true, defaultValue = "productId") String sortTable
-            , @RequestParam(name = "sort", required = true, defaultValue = "ASC") String sort) {
-        return new ResponseEntity<>(new SuccessResponse(20, "Found success", iProductService.getProductsWithPage(page, size, sortTable
-                , sort).getContent()), HttpStatus.OK);
+            , @RequestParam(name = "sort", required = true, defaultValue = "ASC") String sort
+            , @RequestParam(name = "nameProduct", required = false) String nameProduct
+            , @RequestParam(name = "categoryId", required = false) Integer categoryId
+    )
+    {
+        return new ResponseEntity<>(new SuccessResponse(200, "Found success",
+                iProductService.getProductsWithPage(page, size, sortTable, sort, nameProduct, categoryId)), HttpStatus.OK);
     }
 
     // Get products by category id
+    // dat trong category controller
     @GetMapping("/{categoryId}/category")
     ResponseEntity<?> getProductsByCategoryId(@PathVariable int categoryId) {
         return new ResponseEntity<>(new SuccessResponse(200, "Found success", iProductService.getProductsByCategoryId(categoryId)),
@@ -63,8 +69,9 @@ public class ProductController {
         return new ResponseEntity<>(new SuccessResponse(200, "Update success", iProductService.updateProduct(productId, newProduct, 0)),
                 HttpStatus.OK);
     }
+
     @DeleteMapping("{productId}")
-    ResponseEntity<?> updateStatus(@PathVariable int productId, @RequestParam(name = "status") int status) {
+    ResponseEntity<?> updateStatus(@PathVariable int productId, @RequestParam(name = "status") String status) {
         return new ResponseEntity<>(new SuccessResponse(200, "Update success", iProductService.updateStatusProduct(productId, status)),
                 HttpStatus.OK);
     }

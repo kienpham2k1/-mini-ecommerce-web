@@ -17,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin
 public class LoginController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
@@ -35,10 +34,5 @@ public class LoginController {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         final String jwtToken = tokenManager.generateJwtToken(userDetails);
         return new ResponseEntity<>(new SuccessResponse(200, "Login success", new UserLoginResponseModel(userDetails.getUsername(), userDetails.getAuthorities().toString(), jwtToken)), HttpStatus.OK);
-    }
-
-    @GetMapping("/login/context")
-    String getContext() {
-        return "Hello World";
     }
 }

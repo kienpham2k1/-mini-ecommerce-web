@@ -26,7 +26,7 @@ public class OrderController {
 
     @PostMapping()
     ResponseEntity<?> addOrder(@RequestBody CartSelected newCartSelected) {
-        return new ResponseEntity<>(new SuccessResponse(201, "Found Success", iOrderService.addOrder(newCartSelected)), HttpStatus.CREATED);
+        return new ResponseEntity<>(new SuccessResponse(200, "Found Success", iOrderService.addOrder(newCartSelected)), HttpStatus.CREATED);
     }
 
     @PutMapping("{orderId}")

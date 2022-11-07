@@ -35,14 +35,14 @@ public class JwtUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> authories = new ArrayList<>();
 
         if (foundAdmin.isPresent()) {
-            GrantedAuthority authority = new SimpleGrantedAuthority(foundAdmin.get().getTblRolesByRoleId().getRoleName());
+            GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_ADMIN");
             authories.add(authority);
-            return new User(foundAdmin.get().getUserId(), WebSecurityConfig.passwordEncoder().encode(foundAdmin.get().getPassword()), authories);
+            return new User(foundAdmin.get().getUserId(), foundAdmin.get().getPassword(), authories);
         }else {
             if (foundUser.isPresent()) {
-                GrantedAuthority authority = new SimpleGrantedAuthority(foundUser.get().getTblRolesByRoleId().getRoleName());
+                GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
                 authories.add(authority);
-                return new User(foundUser.get().getUserId(), WebSecurityConfig.passwordEncoder().encode(foundUser.get().getPassword()), authories);
+                return new User(foundUser.get().getUserId(), foundUser.get().getPassword(), authories);
             } else throw new UsernameNotFoundException("User is not exist!");
         }
     }

@@ -53,10 +53,7 @@ public class CartServiceImpl implements ICartService {
             }
             throw new NotFoundException("Not enough quantity");
         }
-
     }
-
-
     @Override
     public CartsEntity updateCartItem(int cartId, CartsEntity updateCart, int quantityPlus) {
         Optional<CartsEntity> foundCart = cartRepository.findByUserIdAndProductId(updateCart.getUserId(), updateCart.getProductId());

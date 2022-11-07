@@ -5,6 +5,7 @@ import com.springboot.miniecommercewebapp.exceptions.NotFoundException;
 import com.springboot.miniecommercewebapp.models.CartsEntity;
 import com.springboot.miniecommercewebapp.models.OrderItemsEntity;
 import com.springboot.miniecommercewebapp.models.OrdersEntity;
+import com.springboot.miniecommercewebapp.models.enums.EOrderStatus;
 import com.springboot.miniecommercewebapp.repositories.OrderItemRepository;
 import com.springboot.miniecommercewebapp.repositories.OrderRepository;
 import com.springboot.miniecommercewebapp.services.IOrderItemService;
@@ -49,6 +50,11 @@ public class OrderServiceImpl implements IOrderService {
             for (CartsEntity cartItem : newOrder.getCartList()) {
                 total += cartItem.getPrice();
             }
+            java.util.Date utilDate = new java.util.Date();
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+            newOrder.getNewOrder().setStatus(EOrderStatus.REQUEST);
+            newOrder.getNewOrder().setOrderDate(sqlDate);
+            newOrder.getNewOrder().setTotal(total);
             OrdersEntity insertOrder = orderRepository.save(newOrder.getNewOrder());
             newOrder.getCartList().stream().forEach(cart -> {
                 iOrderDetailService.addOrderItem(insertOrder.getOrderId(), cart);
@@ -62,7 +68,7 @@ public class OrderServiceImpl implements IOrderService {
     public OrdersEntity updateOrder(int orderId, String updateStatus) {
         Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId);
         if (foundOrder.isPresent()) {
-            //foundOrder.get().setStatus(updateStatus);
+            foundOrder.get().setStatus(EOrderStatus.valueOf(updateStatus));
             return orderRepository.save(foundOrder.get());
         }
         throw new NotFoundException("Not found Order");
@@ -72,7 +78,7 @@ public class OrderServiceImpl implements IOrderService {
     // return quantity to product
     public boolean cancelOrder(int orderId) {
         Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId).map(order -> {
-            //order.setStatus("asdasd");
+            order.setStatus(EOrderStatus.CANCELLED);
             return orderRepository.save(order);
         });
         List<OrderItemsEntity> foundOrderItems = orderItemRepository.findByOrderId(orderId);

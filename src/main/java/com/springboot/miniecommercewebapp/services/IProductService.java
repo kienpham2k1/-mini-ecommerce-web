@@ -11,7 +11,7 @@ public interface
 IProductService {
     List<ProductsEntity> getAllProducts();
 
-    Page<ProductsEntity> getProductsWithPage(int page, int size, String sortable, String sort);
+    Page<ProductsEntity> getProductsWithPage(int page, int size, String sortable, String sort, String nameProduct, Integer categoryId );
 
     List<ProductsEntity> getProductsByCategoryId(int categoryId);
 
@@ -25,5 +25,5 @@ IProductService {
     Optional<ProductsEntity> updateProduct(int id, int quantity);
 
     // Update status
-    boolean updateStatusProduct(int id, int newStatus);
+    boolean updateStatusProduct(int id, String newStatus);
 }

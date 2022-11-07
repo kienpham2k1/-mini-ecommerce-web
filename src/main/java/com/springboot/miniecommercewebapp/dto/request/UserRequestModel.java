@@ -14,8 +14,10 @@ import java.sql.Date;
 @Getter
 @Setter
 @Data
-public class UserUpdateRequestModel {
-    //    private String userId;
+public class UserRequestModel {
+    @NotNull
+    @Length(min = 5, max = 25)
+        private String userId;
     @NotNull
     @Length(min = 5)
     private String fullName;
@@ -33,7 +35,6 @@ public class UserUpdateRequestModel {
     @NotNull
     @Length(min = 5)
     private String email;
-    @NotNull
     @Enumerated(EnumType.STRING)
     EUserStatus status;
     int roleId;

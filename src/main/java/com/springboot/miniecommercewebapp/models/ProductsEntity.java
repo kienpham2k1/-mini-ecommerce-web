@@ -2,7 +2,9 @@ package com.springboot.miniecommercewebapp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springboot.miniecommercewebapp.models.enums.EProductStatus;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -15,6 +17,7 @@ import java.util.Collection;
 
 @Entity
 @Data
+@AllArgsConstructor
 @Table(name = "tblProducts", schema = "dbo", catalog = "MiniEcommerce")
 public class ProductsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)

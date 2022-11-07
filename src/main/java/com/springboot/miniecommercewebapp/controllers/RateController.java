@@ -22,8 +22,9 @@ public class RateController {
                 HttpStatus.OK);
     }
 
+    // get theo user a
     @GetMapping("/{productId}/user")
-    ResponseEntity<?> getAllRateOfProduct(@PathVariable int productId, @RequestParam(name = "userId") String userId) {
+    ResponseEntity<?> getRateOfProduct(@PathVariable int productId, @RequestParam(name = "userId") String userId) {
         return new ResponseEntity<>(new SuccessResponse(200, "Found success", iRatingService.getRatingDetail(productId, userId)),
                 HttpStatus.OK);
     }
