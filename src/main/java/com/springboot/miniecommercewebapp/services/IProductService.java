@@ -9,20 +9,17 @@ import java.util.Optional;
 
 public interface
 IProductService {
-    List<ProductsEntity> getAllProducts();
 
     Page<ProductsEntity> getProductsWithPage(int page, int size, String sortable, String sort, String nameProduct, Integer categoryId );
-
-    List<ProductsEntity> getProductsByCategoryId(int categoryId);
 
     Optional<ProductsEntity> getProductById(int productId);
     ProductsEntity addNewProduct(ProductsEntity newProduct);
 
     // Update full
-    ProductsEntity updateProduct( int id,ProductsEntity newProduct, int quantity);
+    ProductsEntity updateProduct( int id,ProductsEntity newProduct);
 
     // Update quantity
-    Optional<ProductsEntity> updateProduct(int id, int quantity);
+    ProductsEntity updateProduct(int id, int quantity);
 
     // Update status
     boolean updateStatusProduct(int id, String newStatus);

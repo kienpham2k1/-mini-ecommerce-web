@@ -68,7 +68,7 @@ public class CartServiceImpl implements ICartService {
             }
             throw new NotFoundException("Not enough quantity");
         }
-        throw new NotFoundException("Not found Cart");
+        throw new NotFoundException("Not found cart item");
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springboot.miniecommercewebapp.models.enums.EProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -18,6 +18,7 @@ import java.util.Collection;
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "tblProducts", schema = "dbo", catalog = "MiniEcommerce")
 public class ProductsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,8 +63,6 @@ public class ProductsEntity {
     @NotNull
     @NotBlank
     private String imgMain;
-
-
     @OneToMany(mappedBy = "tblProductsByProductId")
     @JsonIgnore
     private Collection<CartsEntity> tblCartsByProductId;
@@ -74,8 +73,7 @@ public class ProductsEntity {
     @JsonIgnore
     private Collection<OrderItemsEntity> tblOrderItemsByProductId;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "catagoryID", referencedColumnName = "catagoryID", nullable = false
-            , insertable = false, updatable = false)
+    @JoinColumn(name = "catagoryID", referencedColumnName = "catagoryID", nullable = false, insertable = false, updatable = false)
 //    @JsonIgnore
     private CategoriesEntity tblCategoriesByCatagoryId;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "tblProductsByProductId")
@@ -86,11 +84,12 @@ public class ProductsEntity {
 
     public Integer getScore() {
         Integer totalScore = 0;
+        if (tblRatingsByProductId == null) return  null;
         if (tblRatingsByProductId.size() > 0) {
             for (RatingsEntity i : tblRatingsByProductId) {
                 totalScore += i.getScore();
             }
-        return totalScore/tblRatingsByProductId.size();
+            return totalScore / tblRatingsByProductId.size();
         }
         return null;
     }

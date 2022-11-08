@@ -5,9 +5,11 @@ import com.springboot.miniecommercewebapp.exceptions.NotFoundException;
 import com.springboot.miniecommercewebapp.models.CartsEntity;
 import com.springboot.miniecommercewebapp.models.OrderItemsEntity;
 import com.springboot.miniecommercewebapp.models.OrdersEntity;
+import com.springboot.miniecommercewebapp.models.ProductsEntity;
 import com.springboot.miniecommercewebapp.models.enums.EOrderStatus;
 import com.springboot.miniecommercewebapp.repositories.OrderItemRepository;
 import com.springboot.miniecommercewebapp.repositories.OrderRepository;
+import com.springboot.miniecommercewebapp.repositories.ProductRepository;
 import com.springboot.miniecommercewebapp.services.IOrderItemService;
 import com.springboot.miniecommercewebapp.services.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class OrderServiceImpl implements IOrderService {
     IOrderItemService iOrderDetailService;
     @Autowired
     OrderItemRepository orderItemRepository;
+    @Autowired
+    ProductRepository productRepository;
 
     @Override
     public List<OrdersEntity> getAllOrders(String userId) {
@@ -43,9 +47,22 @@ public class OrderServiceImpl implements IOrderService {
         throw new NotFoundException("Not found order");
     }
 
+    private void isValidCart(List<CartsEntity> cartList) {
+        for (CartsEntity cart : cartList) {
+            Optional<ProductsEntity> checkProduct = productRepository.findById(cart.getProductId());
+            if (checkProduct.isPresent()) {
+                Optional<ProductsEntity> product = productRepository.findByProductIdAndQuantity(checkProduct.get().getProductId(),
+                        cart.getQuantity());
+                if (product.isEmpty()) throw new NotFoundException("Product does not have enought quantity");
+            } else
+                throw new NotFoundException("Product does not exist");
+        }
+    }
+
     @Override
     public OrdersEntity addOrder(CartSelected newOrder) {
         if (newOrder.getCartList().size() > 0) {
+            isValidCart(newOrder.getCartList());
             double total = 0;
             for (CartsEntity cartItem : newOrder.getCartList()) {
                 total += cartItem.getPrice();

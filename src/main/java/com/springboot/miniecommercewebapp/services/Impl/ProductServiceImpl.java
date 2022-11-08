@@ -11,9 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,17 +26,10 @@ public class ProductServiceImpl implements IProductService {
      If user: Get products is only in-stock;
      If admin: Get all products
      */
-    @Override
-    public List<ProductsEntity> getAllProducts() {
-        List<ProductsEntity> listProducts = productRepository.findAll();
-        if (listProducts.size() > 0)
-            return listProducts;
-        throw new NotFoundException("Not found any product");
-    }
 
     @Override
     public Page<ProductsEntity> getProductsWithPage(int page, int size, String sortable, String sort, String nameProduct,
-                                                  Integer categoryId) {
+                                                    Integer categoryId) {
         Page<ProductsEntity> procductPage = null;
         Pageable pageProd = null;
         if (sort.equals("ASC")) {
@@ -43,27 +37,18 @@ public class ProductServiceImpl implements IProductService {
         } else if (sort.equals("DESC")) {
             pageProd = PageRequest.of(page, size, Sort.by(sortable.trim()).descending());
         }
-            procductPage = productRepository.findAll(pageProd);
-        if(categoryId != null && nameProduct != null){
+        procductPage = productRepository.findAll(pageProd);
+        if (categoryId != null && nameProduct != null) {
             procductPage = productRepository.findAllByProductNameContainingIgnoreCaseAndCatagoryId(nameProduct.trim(), categoryId,
                     pageProd);
-        }else if(nameProduct != null){
-            procductPage =  productRepository.findAllByProductNameContainingIgnoreCase(nameProduct.trim(), pageProd);
-        }else if(categoryId != null){
+        } else if (nameProduct != null) {
+            procductPage = productRepository.findAllByProductNameContainingIgnoreCase(nameProduct.trim(), pageProd);
+        } else if (categoryId != null) {
             procductPage = productRepository.findByCatagoryId(categoryId, pageProd);
         }
         if (procductPage.getContent().size() > 0)
             return procductPage;
         throw new NotFoundException("Failed to found product");
-    }
-
-    @Override
-    public List<ProductsEntity> getProductsByCategoryId(int categoryId) {
-//        List<ProductsEntity> listProducts = productRepository.findByCatagoryId(categoryId);
-//        if (listProducts.size() > 0)
-//            return listProducts;
-//        throw new NotFoundException("Not found any product");
-        return  null;
     }
 
     @Override
@@ -97,11 +82,11 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ProductsEntity updateProduct(int productId, ProductsEntity updateProduct, int quantity) {
+    public ProductsEntity updateProduct(int productId, ProductsEntity updateProduct) {
         Optional<ProductsEntity> foundProduct = productRepository.findById(productId);
         if (foundProduct.isPresent()) {
-            Optional<ProductsEntity> foundName = productRepository.findByProductName(updateProduct.getProductName());
 //        Check name
+            Optional<ProductsEntity> foundName = productRepository.findByProductName(updateProduct.getProductName());
             if (foundName.isPresent() && foundName.get().getProductId() != productId)
                 throw new ItemExistException("This name has already taken");
             updateProduct.setProductId(productId);
@@ -113,27 +98,26 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public Optional<ProductsEntity> updateProduct(int id, int quantity) {
+    public ProductsEntity updateProduct(int id, int quantity) {
         Optional<ProductsEntity> availableProduct = productRepository.findById(id);
         if (availableProduct.isPresent()) {
-            boolean newStatus = (availableProduct.get().getQuantity() - quantity) != 0;
-            availableProduct.map(product -> {
-                product.setQuantity(availableProduct.get().getQuantity() - quantity);
-                //product.setStatus(1);
-                return productRepository.save(product);
-            });
+            ProductsEntity newProduct = availableProduct.get();
+            if ((newProduct.getQuantity() - quantity) == 0) newProduct.setStatus(EProductStatus.OUT_OF_STOCK);
+            newProduct.setQuantity(newProduct.getQuantity() - quantity);
+            return productRepository.save(newProduct);
         }
-        return availableProduct;
+        throw new NotFoundException("Not found product");
+//        return availableProduct;
     }
 
     @Override
     public boolean updateStatusProduct(int id, String newStatus) {
-        Optional<ProductsEntity> updateProduct = productRepository.findById(id)
-                .map(product -> {
-                    product.setStatus(EProductStatus.valueOf(newStatus));
-                    return productRepository.save(product);
-                });
+        Optional<ProductsEntity> updateProduct = productRepository.findById(id);
         if (updateProduct.isPresent()) {
+            if (newStatus.equals("STOCKING") && updateProduct.get().getQuantity() == 0)
+                throw new IllegalArgumentException("STOCKING product can not have quantity is 0");
+            updateProduct.get().setStatus(EProductStatus.valueOf(newStatus));
+            productRepository.save(updateProduct.get());
             return true;
         }
         throw new NotFoundException("Not found product.");
