@@ -11,10 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,8 +30,7 @@ public class ProductServiceImpl implements IProductService {
      */
 
     @Override
-    public Page<ProductsEntity> getProductsWithPage(int page, int size, String sortable, String sort, String nameProduct,
-                                                    Integer categoryId) {
+    public Page<ProductsEntity> getProductsWithPage(int page, int size, String sortable, String sort, String nameProduct, Integer categoryId) {
         Page<ProductsEntity> procductPage = null;
         Pageable pageProd = null;
         if (sort.equals("ASC")) {
@@ -37,25 +38,34 @@ public class ProductServiceImpl implements IProductService {
         } else if (sort.equals("DESC")) {
             pageProd = PageRequest.of(page, size, Sort.by(sortable.trim()).descending());
         }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         procductPage = productRepository.findAll(pageProd);
-        if (categoryId != null && nameProduct != null) {
-            procductPage = productRepository.findAllByProductNameContainingIgnoreCaseAndCatagoryId(nameProduct.trim(), categoryId,
-                    pageProd);
-        } else if (nameProduct != null) {
-            procductPage = productRepository.findAllByProductNameContainingIgnoreCase(nameProduct.trim(), pageProd);
-        } else if (categoryId != null) {
-            procductPage = productRepository.findByCatagoryId(categoryId, pageProd);
+        if (auth.getAuthorities().equals(List.of(new SimpleGrantedAuthority("ROLE_USER"))) || auth.getAuthorities().equals(List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS")))) {
+            procductPage = productRepository.findAllByQuantityGreaterThanAndStatusEqualsIgnoreCase(pageProd);
+            if (categoryId != null && nameProduct != null) {
+                procductPage = productRepository.findAllByProductNameContainingIgnoreCaseAndCatagoryIdAndQuantityGreaterThanAndStatusEqualsIgnoreCase(nameProduct.trim(), categoryId, pageProd);
+            } else if (nameProduct != null) {
+                procductPage = productRepository.findAllByProductNameContainingIgnoreCaseAndQuantityGreaterThanAndStatusEqualsIgnoreCase(nameProduct.trim(), pageProd);
+            } else if (categoryId != null) {
+                procductPage = productRepository.findByCatagoryIdAndQuantityGreaterThanAndStatusEqualsIgnoreCase(categoryId, pageProd);
+            }
+        } else {
+            if (categoryId != null && nameProduct != null) {
+                procductPage = productRepository.findAllByProductNameContainingIgnoreCaseAndCatagoryId(nameProduct.trim(), categoryId, pageProd);
+            } else if (nameProduct != null) {
+                procductPage = productRepository.findAllByProductNameContainingIgnoreCase(nameProduct.trim(), pageProd);
+            } else if (categoryId != null) {
+                procductPage = productRepository.findByCatagoryId(categoryId, pageProd);
+            }
         }
-        if (procductPage.getContent().size() > 0)
-            return procductPage;
+        if (procductPage.getContent().size() > 0) return procductPage;
         throw new NotFoundException("Failed to found product");
     }
 
     @Override
     public Optional<ProductsEntity> getProductById(int productId) {
         Optional<ProductsEntity> foundProductsEntity = productRepository.findById(productId);
-        if (foundProductsEntity.isPresent())
-            return foundProductsEntity;
+        if (foundProductsEntity.isPresent()) return foundProductsEntity;
         throw new NotFoundException("Not found product");
     }
 

@@ -16,22 +16,25 @@ public class RateController {
     @Autowired
     IRateService iRatingService;
 
-    @GetMapping("{productId}")
-    ResponseEntity<?> getAllRateOfProduct(@PathVariable int productId) {
-        return new ResponseEntity<>(new SuccessResponse(200, "Found success", iRatingService.getALlRatingByProductId(productId)),
-                HttpStatus.OK);
-    }
+//    @GetMapping("{productId}")
+//    ResponseEntity<?> getAllRateOfProduct(@PathVariable int productId) {
+//        return new ResponseEntity<>(new SuccessResponse(200, "Found success", iRatingService.getALlRatingByProductId(productId)),
+//                HttpStatus.OK);
+//    }
 
     // get theo user a
-    @GetMapping("/{productId}/user")
-    ResponseEntity<?> getRateOfProduct(@PathVariable int productId, @RequestParam(name = "userId") String userId) {
-        return new ResponseEntity<>(new SuccessResponse(200, "Found success", iRatingService.getRatingDetail(productId, userId)),
+    @GetMapping("")
+    ResponseEntity<?> getRateOfProduct(@RequestParam(name = "productId") int productId,
+                                       @RequestParam(name = "orderId") int orderId) {
+        return new ResponseEntity<>(new SuccessResponse(200, "Found success",
+                iRatingService.getRatingDetail(productId, orderId)),
                 HttpStatus.OK);
     }
 
     @PostMapping("")
-    ResponseEntity<?> addNewRating(@Valid @RequestBody RatingsEntity rate) {
-        return new ResponseEntity<>(new SuccessResponse(200, "Add new success", iRatingService.addNewRate(rate)), HttpStatus.OK);
+    ResponseEntity<?> addNewRating(@Valid @RequestBody RatingsEntity rate, @RequestParam(name = "orderId") int orderId) {
+        return new ResponseEntity<>(new SuccessResponse(200, "Add new success", iRatingService.addNewRate(rate, orderId)),
+                HttpStatus.OK);
     }
 
     @PutMapping("")

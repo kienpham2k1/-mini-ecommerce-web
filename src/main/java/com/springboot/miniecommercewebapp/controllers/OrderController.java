@@ -2,11 +2,14 @@ package com.springboot.miniecommercewebapp.controllers;
 
 import com.springboot.miniecommercewebapp.dto.request.CartSelected;
 import com.springboot.miniecommercewebapp.dto.response.SuccessResponse;
+import com.springboot.miniecommercewebapp.models.CartsEntity;
 import com.springboot.miniecommercewebapp.services.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("order")
@@ -15,8 +18,8 @@ public class OrderController {
     IOrderService iOrderService;
 
     @GetMapping("")
-    ResponseEntity<?> getOrders(@RequestParam(name = "userId") String userId) {
-        return new ResponseEntity<>(new SuccessResponse(200, "Found Success", iOrderService.getAllOrders(userId)), HttpStatus.OK);
+    ResponseEntity<?> getOrders() {
+        return new ResponseEntity<>(new SuccessResponse(200, "Found Success", iOrderService.getAllOrders()), HttpStatus.OK);
     }
 
     @GetMapping("{orderId}")
@@ -25,8 +28,9 @@ public class OrderController {
     }
 
     @PostMapping()
-    ResponseEntity<?> addOrder(@RequestBody CartSelected newCartSelected) {
-        return new ResponseEntity<>(new SuccessResponse(200, "Found Success", iOrderService.addOrder(newCartSelected)), HttpStatus.CREATED);
+    ResponseEntity<?> addOrder(@RequestBody List<CartsEntity> listCart) {
+        return new ResponseEntity<>(new SuccessResponse(200, "Found Success", iOrderService.addOrder(listCart)),
+                HttpStatus.CREATED);
     }
 
     @PutMapping("{orderId}")

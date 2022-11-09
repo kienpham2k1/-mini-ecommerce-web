@@ -1,6 +1,5 @@
 package com.springboot.miniecommercewebapp.services.Impl;
 
-import com.springboot.miniecommercewebapp.config.WebSecurityConfig;
 import com.springboot.miniecommercewebapp.models.AdminsEntity;
 import com.springboot.miniecommercewebapp.models.UsersEntity;
 import com.springboot.miniecommercewebapp.repositories.AdminRepository;
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +36,7 @@ public class JwtUserDetailsService implements UserDetailsService {
             GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_ADMIN");
             authories.add(authority);
             return new User(foundAdmin.get().getUserId(), foundAdmin.get().getPassword(), authories);
-        }else {
+        } else {
             if (foundUser.isPresent()) {
                 GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
                 authories.add(authority);

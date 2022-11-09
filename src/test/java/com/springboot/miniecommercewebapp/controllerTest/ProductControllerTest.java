@@ -25,17 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class ProductControllerTest {
     @Mock
     IProductService iProductService;
     @InjectMocks
     ProductController productController;
-    @Mock
-    ProductRepository productRepository;
     ProductsEntity products;
     ProductsEntity products2;
     List<ProductsEntity> listProd = new ArrayList<>();

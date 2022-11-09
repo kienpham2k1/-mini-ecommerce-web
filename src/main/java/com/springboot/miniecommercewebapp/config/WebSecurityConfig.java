@@ -4,12 +4,10 @@ import com.springboot.miniecommercewebapp.filter.JwtFilter;
 import com.springboot.miniecommercewebapp.jwtUtils.JwtAccessDenied;
 import com.springboot.miniecommercewebapp.jwtUtils.JwtAuthenticationEntryPoint;
 import com.springboot.miniecommercewebapp.repositories.UserRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -25,9 +23,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
@@ -71,30 +68,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login/**").permitAll()
                 .antMatchers("/register/**").permitAll()
                 //USER
-                .antMatchers(GET,"/users/**").hasRole("ADMIN")
-                .antMatchers(POST,"/users/**").hasRole("ADMIN")
-                .antMatchers(PUT,"/users/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(DELETE,"/users/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(GET, "/users/**").hasRole("ADMIN")
+                .antMatchers(POST, "/users/**").hasRole("ADMIN")
+                .antMatchers(PUT, "/users/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(DELETE, "/users/**").hasAnyRole("ADMIN", "USER")
                 // PRODUCT
-                .antMatchers(GET,"/products/**").permitAll()
-                .antMatchers(POST,"/products/**").hasRole("ADMIN")
-                .antMatchers(PUT,"/products/**").hasRole("ADMIN")
-                .antMatchers(DELETE,"/products/**").hasRole("ADMIN")
+                .antMatchers(GET, "/products/**").permitAll()
+                .antMatchers(POST, "/products/**").hasRole("ADMIN")
+                .antMatchers(PUT, "/products/**").hasRole("ADMIN")
+                .antMatchers(DELETE, "/products/**").hasRole("ADMIN")
                 // CART
                 .antMatchers(GET, "/cart/**").hasRole("USER")
                 .antMatchers(POST, "/cart/**").hasRole("USER")
                 .antMatchers(PUT, "/cart/**").hasRole("USER")
                 .antMatchers(DELETE, "/cart/**").hasRole("USER")
                 // ORDER
-                .antMatchers(GET, "/order/**").hasAnyRole("ADMIN","USER")
-                .antMatchers(POST, "/order/**").hasAnyRole("ADMIN","USER")
-                .antMatchers(PUT, "/order/**").hasAnyRole("ADMIN","USER")
-                .antMatchers(DELETE, "/order/**").hasAnyRole("ADMIN","USER")
+                .antMatchers(GET, "/order/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(POST, "/order/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(PUT, "/order/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(DELETE, "/order/**").hasAnyRole("ADMIN", "USER")
                 // ORDER DETAIL
-                .antMatchers(GET, "/orderItem/**").hasAnyRole("ADMIN","USER")
-                .antMatchers(POST, "/orderItem/**").hasAnyRole("ADMIN","USER")
-                .antMatchers(PUT, "/orderItem/**").hasAnyRole("ADMIN","USER")
-                .antMatchers(DELETE, "/orderItem/**").hasAnyRole("ADMIN","USER")
+                .antMatchers(GET, "/orderItem/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(POST, "/orderItem/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(PUT, "/orderItem/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(DELETE, "/orderItem/**").hasAnyRole("ADMIN", "USER")
                 // CATEGORY
                 .antMatchers(GET, "/category/**").permitAll()
                 .antMatchers(POST, "/category/**").hasRole("ADMIN")

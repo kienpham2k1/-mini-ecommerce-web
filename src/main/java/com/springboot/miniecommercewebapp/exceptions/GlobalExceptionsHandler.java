@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,12 +34,21 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
         ErrorResponse error = new ErrorResponse(302, exception.getMessage());
         return new ResponseEntity<ErrorResponse>(error, HttpStatus.FOUND);
     }
+
     @ExceptionHandler({IllegalArgumentException.class})
     protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception,
                                                                            WebRequest request) {
         ErrorResponse error = new ErrorResponse(400, exception.getMessage());
         return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException exception,
+                                                                        WebRequest request) {
+        ErrorResponse error = new ErrorResponse(403, exception.getMessage());
+        return new ResponseEntity<ErrorResponse>(error, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler({SQLException.class})
     protected ResponseEntity<ErrorResponse> handleSqlException(SQLException ex, WebRequest request) {
         ErrorResponse error = new ErrorResponse(409, "The INSERT statement conflicted with the FOREIGN KEY constraint");

@@ -1,6 +1,5 @@
 package com.springboot.miniecommercewebapp.services.Impl;
 
-import com.springboot.miniecommercewebapp.dto.request.CartSelected;
 import com.springboot.miniecommercewebapp.exceptions.NotFoundException;
 import com.springboot.miniecommercewebapp.models.CartsEntity;
 import com.springboot.miniecommercewebapp.models.OrderItemsEntity;
@@ -13,6 +12,9 @@ import com.springboot.miniecommercewebapp.repositories.ProductRepository;
 import com.springboot.miniecommercewebapp.services.IOrderItemService;
 import com.springboot.miniecommercewebapp.services.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,8 +32,9 @@ public class OrderServiceImpl implements IOrderService {
     ProductRepository productRepository;
 
     @Override
-    public List<OrdersEntity> getAllOrders(String userId) {
-        List<OrdersEntity> orderList = orderRepository.findByUserId(userId);
+    public List<OrdersEntity> getAllOrders() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        List<OrdersEntity> orderList = orderRepository.findByUserIdOrderByOrderDateDesc(auth.getName());
         if (orderList.size() > 0) {
             return orderList;
         }
@@ -41,7 +44,10 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public Optional<OrdersEntity> getOrder(int orderId) {
         Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (foundOrder.isPresent()) {
+            if (!auth.getName().equalsIgnoreCase(foundOrder.get().getUserId()))
+                throw new AccessDeniedException("You dont have permistion to do this");
             return foundOrder;
         }
         throw new NotFoundException("Not found order");
@@ -51,7 +57,7 @@ public class OrderServiceImpl implements IOrderService {
         for (CartsEntity cart : cartList) {
             Optional<ProductsEntity> checkProduct = productRepository.findById(cart.getProductId());
             if (checkProduct.isPresent()) {
-                Optional<ProductsEntity> product = productRepository.findByProductIdAndQuantity(checkProduct.get().getProductId(),
+                Optional<ProductsEntity> product = productRepository.findByProductIdAndQuantityGreaterThanEqualAndStatusEqualsIgnoreCase(checkProduct.get().getProductId(),
                         cart.getQuantity());
                 if (product.isEmpty()) throw new NotFoundException("Product does not have enought quantity");
             } else
@@ -60,20 +66,23 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public OrdersEntity addOrder(CartSelected newOrder) {
-        if (newOrder.getCartList().size() > 0) {
-            isValidCart(newOrder.getCartList());
+    public OrdersEntity addOrder(List<CartsEntity> listCart) {
+        if (listCart.size() > 0) {
+            isValidCart(listCart);
             double total = 0;
-            for (CartsEntity cartItem : newOrder.getCartList()) {
+            for (CartsEntity cartItem : listCart) {
                 total += cartItem.getPrice();
             }
             java.util.Date utilDate = new java.util.Date();
             java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-            newOrder.getNewOrder().setStatus(EOrderStatus.REQUEST);
-            newOrder.getNewOrder().setOrderDate(sqlDate);
-            newOrder.getNewOrder().setTotal(total);
-            OrdersEntity insertOrder = orderRepository.save(newOrder.getNewOrder());
-            newOrder.getCartList().stream().forEach(cart -> {
+            OrdersEntity newOrder = new OrdersEntity();
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            newOrder.setUserId(auth.getName());
+            newOrder.setStatus(EOrderStatus.REQUEST);
+            newOrder.setOrderDate(sqlDate);
+            newOrder.setTotal(total);
+            OrdersEntity insertOrder = orderRepository.save(newOrder);
+            listCart.stream().forEach(cart -> {
                 iOrderDetailService.addOrderItem(insertOrder.getOrderId(), cart);
             });
             return insertOrder;
@@ -85,6 +94,9 @@ public class OrderServiceImpl implements IOrderService {
     public OrdersEntity updateOrder(int orderId, String updateStatus) {
         Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId);
         if (foundOrder.isPresent()) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (!auth.getName().equalsIgnoreCase(foundOrder.get().getUserId()))
+                throw new AccessDeniedException("You dont have permistion to do this");
             foundOrder.get().setStatus(EOrderStatus.valueOf(updateStatus));
             return orderRepository.save(foundOrder.get());
         }
@@ -94,19 +106,26 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     // return quantity to product
     public boolean cancelOrder(int orderId) {
-        Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId).map(order -> {
-            order.setStatus(EOrderStatus.CANCELLED);
-            return orderRepository.save(order);
-        });
-        List<OrderItemsEntity> foundOrderItems = orderItemRepository.findByOrderId(orderId);
+        Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId);
         if (foundOrder.isPresent()) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (!auth.getName().equalsIgnoreCase(foundOrder.get().getUserId()))
+                throw new AccessDeniedException("You dont have permistion to do this");
+            if (foundOrder.get().getStatus().equals(EOrderStatus.COMPLETED)
+                    || foundOrder.get().getStatus().equals(EOrderStatus.DENIED)
+                    || foundOrder.get().getStatus().equals(EOrderStatus.CANCELLED)) {
+                throw new IllegalArgumentException("Bad request");
+            }
+            foundOrder.get().setStatus(EOrderStatus.CANCELLED);
+            orderRepository.save(foundOrder.get());
+            List<OrderItemsEntity> foundOrderItems = orderItemRepository.findByOrderId(orderId);
             if (foundOrderItems.size() > 0) {
                 foundOrderItems.stream().forEach(orderDetail -> {
                     iOrderDetailService.cancelOrderDetail(orderDetail.getDetailId());
                 });
+                return true;
             }
-            return true;
         }
-        throw new NotFoundException("Not found");
+        throw new NotFoundException("Order not found");
     }
 }

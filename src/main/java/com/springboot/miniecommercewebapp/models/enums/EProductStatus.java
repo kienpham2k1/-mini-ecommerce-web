@@ -7,5 +7,4 @@ import lombok.NoArgsConstructor;
 public enum EProductStatus {
     STOCKING,
     OUT_OF_STOCK,
-    DELETED,
 }

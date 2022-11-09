@@ -13,6 +13,9 @@ import com.springboot.miniecommercewebapp.services.ICartService;
 import com.springboot.miniecommercewebapp.services.IOrderItemService;
 import com.springboot.miniecommercewebapp.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,11 +38,20 @@ public class OrderItemServiceImpl implements IOrderItemService {
 
     @Override
     public List<OrderItemsEntity> getOrderItemsByOrderId(int orderId) {
-        List<OrderItemsEntity> orderDetailList = orderItemRepository.findByOrderId(orderId);
-        if (orderDetailList.size() > 0) {
-            return orderDetailList;
+        Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId);
+        if (foundOrder.isPresent()) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (!auth.getName().equalsIgnoreCase(foundOrder.get().getUserId())) {
+                throw new AccessDeniedException("You dont have permistion to do this");
+            } else {
+                List<OrderItemsEntity> orderDetailList = orderItemRepository.findByOrderId(orderId);
+                if (orderDetailList.size() > 0) {
+                    return orderDetailList;
+                }
+                throw new NotFoundException("Order item list not found");
+            }
         }
-        throw new NotFoundException("Not found");
+        throw new NotFoundException("Order not found");
     }
 
     // When add ; Delete to current product quantity
@@ -50,7 +62,7 @@ public class OrderItemServiceImpl implements IOrderItemService {
         // Check Order, must exist to mapping
         Optional<OrdersEntity> foundOrder = orderRepository.findById(orderId);
         // Check product, must exist to update quantity
-        Optional<ProductsEntity> foundProduct = productRepository.findByProductIdAndQuantity(cartItem.getProductId(), cartItem.getQuantity());
+        Optional<ProductsEntity> foundProduct = productRepository.findByProductIdAndQuantityGreaterThanEqualAndStatusEqualsIgnoreCase(cartItem.getProductId(), cartItem.getQuantity());
         if (foundProduct.isPresent()) {
             if (foundOrder.isPresent()) {
                 if (foundCart) {
@@ -75,10 +87,11 @@ public class OrderItemServiceImpl implements IOrderItemService {
         if (foundOrderItem.isPresent()) {
             Optional<ProductsEntity> foundProduct = productRepository.findById(foundOrderItem.get().getProductId());
             if (foundProduct.isPresent()) {
-                iProductService.updateProduct(foundProduct.get().getProductId(),
+               ProductsEntity e =  iProductService.updateProduct(foundProduct.get().getProductId(),
                         -(foundOrderItem.get().getQuantity()));
                 return true;
-            } throw new NotFoundException("Not found product");
+            }
+            throw new NotFoundException("Not found product");
         }
         throw new NotFoundException("Not found order item");
     }

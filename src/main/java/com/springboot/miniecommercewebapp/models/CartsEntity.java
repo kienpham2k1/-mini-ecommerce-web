@@ -1,6 +1,7 @@
 package com.springboot.miniecommercewebapp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.springboot.miniecommercewebapp.models.enums.EProductStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,7 +18,6 @@ public class CartsEntity {
     private int cartId;
     @Basic
     @Column(name = "userID", nullable = false, length = 20)
-    @NotNull
     private String userId;
     @Basic
     @Column(name = "productID", nullable = false)
@@ -38,4 +38,13 @@ public class CartsEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "productID", referencedColumnName = "productID", nullable = false, insertable = false, updatable = false)
     private ProductsEntity tblProductsByProductId;
+    @Transient
+    private boolean Valid;
+
+    public boolean isValid() {
+        if (tblProductsByProductId == null) return false;
+        if (tblProductsByProductId.getQuantity() > 0 && tblProductsByProductId.getStatus().equals(EProductStatus.STOCKING))
+            return true;
+        return false;
+    }
 }

@@ -13,8 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
+import org.springframework.security.test.context.support.WithMockUser;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +30,6 @@ public class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
-
     @InjectMocks
     private IProductService iProductService = new ProductServiceImpl();
     private static List<ProductsEntity> list = new ArrayList<>();
@@ -48,6 +47,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void testGetProductsWithPage() {
         int page = 0;
         int size = 5;
@@ -60,6 +60,15 @@ public class ProductServiceTest {
         pageProd = PageRequest.of(page, size, Sort.by(sortable.trim()).ascending());
         procductPage = new PageImpl<>(list, pageProd, 12);
         when(productRepository.findAll(pageProd)).thenReturn(procductPage);
+        assertEquals(5,
+                iProductService.getProductsWithPage(page, size, sortable, sort, nameProduct, categoryId).getSize());
+        categoryId = 1;
+        when(productRepository.findByCatagoryId(1, pageProd)).thenReturn(procductPage);
+        assertEquals(5,
+                iProductService.getProductsWithPage(page, size, sortable, sort, nameProduct, categoryId).getSize());
+        categoryId = null;
+        nameProduct = "name";
+        when(productRepository.findAllByProductNameContainingIgnoreCase("name", pageProd)).thenReturn(procductPage);
         assertEquals(5,
                 iProductService.getProductsWithPage(page, size, sortable, sort, nameProduct, categoryId).getSize());
     }
@@ -180,6 +189,7 @@ public class ProductServiceTest {
         String newStatus = "STOCKING";
         String date = "2015-03-31";
         ProductsEntity product = new ProductsEntity();
+        product.setQuantity(1);
         product.setStatus(EProductStatus.OUT_OF_STOCK);
         when(productRepository.findById(id)).thenReturn(Optional.of(product));
         when(productRepository.save(product)).thenReturn(product);
