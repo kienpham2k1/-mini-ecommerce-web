@@ -68,9 +68,6 @@ public class ProductsEntity {
     private Collection<CartsEntity> tblCartsByProductId;
     @OneToMany(mappedBy = "tblProductsByProductId")
     @JsonIgnore
-    private Collection<ImgEntity> tblImgsByProductId;
-    @OneToMany(mappedBy = "tblProductsByProductId")
-    @JsonIgnore
     private Collection<OrderItemsEntity> tblOrderItemsByProductId;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "catagoryID", referencedColumnName = "catagoryID", nullable = false, insertable = false, updatable = false)

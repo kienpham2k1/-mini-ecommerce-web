@@ -19,14 +19,6 @@ public class ProductController {
     @Autowired
     ProductRepository productRepository;
 
-    // Get all products
-//    @GetMapping()
-////    @PreAuthorize("hasAuthority('ROLE_USER')")
-//    ResponseEntity<?> getAllProducts() {
-//        List<ProductsEntity> listProducts = iProductService.getAllProducts();
-//        return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponse("200", "Successfully found list of products", listProducts));
-//    }
-
     @GetMapping()
  public    ResponseEntity<?> getAllProducts(
             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page
